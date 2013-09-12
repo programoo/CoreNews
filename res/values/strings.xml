@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">CoreNews</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+
+    <!-- news tab -->
+    <string name="news_title">ข่าว</string>
+
+    <!-- settings tab -->
+    <string name="settings_title">ตั้งค่า</string>
+
+</resources>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/newsFeedDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/newsTimeIsRead" >
+
+        <ImageView
+            android:id="@+id/newsLogo"
+            android:contentDescription="@string/hello_world"
+            android:src="@drawable/ic_launcher" />
+
+        <TextView
+            android:id="@+id/newsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/newsLogo"
+            android:ellipsize="marquee"
+            android:maxLines="2" />
+
+        <TextView
+            android:id="@+id/reporter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/newsText"
+            android:layout_toRightOf="@+id/newsLogo"
+            android:ellipsize="marquee"
+            android:maxLines="1" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/newsTimeIsRead"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true" >
+
+        <TextView
+            android:id="@+id/newsTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingBottom="2dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="15dp"
+            android:paddingTop="2dp" />
+
+        <ImageView
+            android:id="@+id/isRead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/hello_world"
+            android:maxHeight="10dp"
+            android:maxWidth="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/is_read"
+            android:visibility="visible" />
+    </RelativeLayout>
+
+</RelativeLayout>
