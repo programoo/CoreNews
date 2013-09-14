@@ -38,14 +38,14 @@ public class MainActivity extends SherlockFragmentActivity {
 		tabArgs.putString("collection", "tab_news");
 		tabArgs.putInt("id", 0);
 		mTabsAdapter.addTab(mTabHost.newTabSpec("tab_news"), getResources()
-				.getDrawable(R.drawable.news_icon), NewsFragment.class,
+				.getDrawable(R.drawable.news_icon), FeedFragment.class,
 				tabArgs, getString(R.string.news_title));
 				
 		tabArgs = new Bundle();
 		tabArgs.putString("collection", "tab_setting");
 		tabArgs.putInt("id", 1);
 		mTabsAdapter.addTab(mTabHost.newTabSpec("tab_news"), getResources()
-				.getDrawable(R.drawable.settings_icon), NewsFragment.class,
+				.getDrawable(R.drawable.settings_icon), FeedFragment.class,
 				tabArgs, getString(R.string.settings_title));
 		
 		

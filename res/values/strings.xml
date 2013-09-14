@@ -11,4 +11,13 @@
     <!-- settings tab -->
     <string name="settings_title">ตั้งค่า</string>
 
+    <!-- thai translate -->
+    <string name="from_text">ที่มา</string>
+    <string name="by_text">โดย</string>
+    <string name="thairath_text">ไทยรัฐ</string>
+    <string name="political_text">ข่าวการเมือง</string>
+    <string name="pass_hour_text">ชั่วโมงที่แล้ว</string>
+    <string name="pass_minute_text">นาทีที่แล้ว</string>
+    <string name="pass_second_text">ไม่กี่วินาทีที่แล้ว</string>
+
 </resources>
