@@ -22,6 +22,7 @@ public class FeedListViewAdapter extends BaseAdapter {
 	private LayoutInflater inflater = null;
 	private TextView description = null;
 	private ImageView iv = null;
+	private ImageView providerIcon=null;
 	private TextView reporterText = null;
 	private AQuery aq = null;
 	private Typeface tf = null;
@@ -47,19 +48,24 @@ public class FeedListViewAdapter extends BaseAdapter {
 			convertView = inflater.inflate(R.layout.news_fragment_listview,
 					parent, false);
 
-			//description.setTypeface(tf);
-			//reporterText.setTypeface(tf);
 		}
 		// else{
 		iv = (ImageView) convertView.findViewById(R.id.newsIcon);
-		aq.id(iv).image(this.newsList.get(position).imgUrl, true, true, 200, 0);
+		aq.id(iv).image(this.newsList.get(position).imgUrl, true, true,200, 0);
+		
+		providerIcon =(ImageView) convertView.findViewById(R.id.providerIcon);
+		if(this.newsList.get(position).provider.indexOf("thairath") != -1){
+			providerIcon.setImageResource(R.drawable.thairath);
+		}
+		else if(this.newsList.get(position).provider.indexOf("dailynews") != -1){
+			providerIcon.setImageResource(R.drawable.dailynews);
+		}
 		
 		description = (TextView) convertView.findViewById(R.id.newsText);
 		description.setText(this.newsList.get(position).title);
 
 		reporterText = (TextView) convertView.findViewById(R.id.fromText);
-		reporterText.setText(this.newsList.get(position).time + " " + this.context.getString(R.string.by_text)+" "
-				+ this.newsList.get(position).provider);
+		reporterText.setText(this.newsList.get(position).time);
 
 		return convertView;
 

@@ -10,14 +10,39 @@
 
     <!-- settings tab -->
     <string name="settings_title">ตั้งค่า</string>
+    <string name="provider_selector_text">เลือกสำนักพิมพ์</string>
+    <string name="typenews_selector_text">เลือกประเภทข่าว</string>
+    <string name="sport_text">กีฬา</string>
+    <string name="political_text">การเมือง</string>
+    <string name="entertainment_text">บันเทิง</string>
+    <string name="it_text">เทคโนโลยี</string>
+    <string name="economic_text">เศรษฐกิจ</string>
+    <string name="study_text">การศึกษา</string>
+    <string name="oversea_text">ต่างประเทศ</string>
+    <string name="lifestyle_text">ไลฟ์สไตล์</string>
+    <string name="other_text">ทั่วไป</string>
 
     <!-- thai translate -->
     <string name="from_text">ที่มา</string>
     <string name="by_text">โดย</string>
+    <string name="dailynews_text">เดลินิวส์</string>
     <string name="thairath_text">ไทยรัฐ</string>
     <string name="political_text">ข่าวการเมือง</string>
+    <string name="pass_day_text">วันที่แล้ว</string>
     <string name="pass_hour_text">ชั่วโมงที่แล้ว</string>
     <string name="pass_minute_text">นาทีที่แล้ว</string>
     <string name="pass_second_text">ไม่กี่วินาทีที่แล้ว</string>
+    <string name="january">มกราคม</string>
+    <string name="february">กุมภาพันธ์</string>
+    <string name="march">มีนาคม</string>
+    <string name="april">เมษายน</string>
+    <string name="may">พฤษภาคม</string>
+    <string name="june">มิถุนายน</string>
+    <string name="july">กรกฎาคม</string>
+    <string name="august">สิงหาคม</string>
+    <string name="september">กันยายน</string>
+    <string name="october">ตุลาคม</string>
+    <string name="november">พฤศจิกายน</string>
+    <string name="december">ธันวาคม</string>
 
 </resources>

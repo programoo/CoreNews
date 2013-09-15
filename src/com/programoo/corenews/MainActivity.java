@@ -45,7 +45,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		tabArgs.putString("collection", "tab_setting");
 		tabArgs.putInt("id", 1);
 		mTabsAdapter.addTab(mTabHost.newTabSpec("tab_news"), getResources()
-				.getDrawable(R.drawable.settings_icon), FeedFragment.class,
+				.getDrawable(R.drawable.settings_icon), SettingFragment.class,
 				tabArgs, getString(R.string.settings_title));
 		
 		

@@ -2,7 +2,6 @@ package com.programoo.corenews;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Calendar;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -11,7 +10,10 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,14 +33,12 @@ public class FeedFragment extends SherlockFragment implements
 	private View newsFragment;
 	FeedListViewAdapter ardap;
 	private ListView lv;
+	private int counter = 0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		new RequestTask().execute("http://m.thairath.co.th/");
-		// request follow new in list
-
 	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,12 +46,21 @@ public class FeedFragment extends SherlockFragment implements
 		this.newsFragment = inflater.inflate(R.layout.news_fragment, container,
 				false);
 		lv = (ListView) newsFragment.findViewById(R.id.list1Fragment);
-		// ardap = new FeedListViewAdapter(getActivity(), Info.newsList);
-		// lv.setAdapter(ardap);
+		ardap = new FeedListViewAdapter(getActivity(), Info.newsList);
+		lv.setAdapter(ardap);
 		Log.d(tag, "onCreateView");
 		lv.setOnItemClickListener(this);
 
 		return newsFragment;
+	}
+
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onViewCreated(view, savedInstanceState);
+		new RequestTask().execute("http://m.dailynews.co.th/");
+		new RequestTask().execute("http://m.thairath.co.th/");
+
 	}
 
 	@Override
@@ -72,6 +81,11 @@ public class FeedFragment extends SherlockFragment implements
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		// TODO Auto-generated method stub
+		Intent it = new Intent(getActivity(), WebViewActivity.class);
+		it.putExtra("url", Info.newsList.get(arg2).urlContent);
+		startActivity(it);
+		getActivity().overridePendingTransition(R.drawable.fadein,
+				R.drawable.fadeout);
 
 	}
 
@@ -83,14 +97,11 @@ public class FeedFragment extends SherlockFragment implements
 		private String responseString = null;
 		private StatusLine statusLine;
 		private ByteArrayOutputStream out;
-		private Calendar c;
 		private String extract[];
 		private String newsContent;
 		private String title;
 		private String time;
 		private String imgUrl;
-		private int newsTime;
-		private int currentTime;
 
 		public RequestNewsContent(News n) {
 			this.n = n;
@@ -125,19 +136,36 @@ public class FeedFragment extends SherlockFragment implements
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			//prevent error when internet connection down
-			try{
-				extract = result.split("<div id=\"content\">");
+
+			if (n.provider.equalsIgnoreCase("http://m.thairath.co.th/")) {
+				this.thairathParser(result);
 			}
-			catch(NullPointerException e){
+			if (n.provider.equalsIgnoreCase("http://m.dailynews.co.th/")) {
+				this.dailyNewsParser(result);
+			}
+
+			// ++counter;
+
+			// if (counter == Info.newsList.size()) {
+			Info.sortNewsList();
+			// }
+
+			reloadViewAfterRequestTaskComplete();
+		}
+
+		public void thairathParser(String result) {
+
+			// prevent error when internet connection down
+			try {
+				extract = result.split("<div id=\"content\">");
+			} catch (NullPointerException e) {
 				e.printStackTrace();
-				Log.e(tag,"null response");
+				Log.e(tag, "null response");
 				Info.newsList.remove(n);
 				return;
 			}
 
 			newsContent = extract[2].split("</div>")[0];
-			// Info.longInfo(tag, newsContent);
 
 			title = result.split("<title>")[1].split(" - ")[0];
 			time = result.split("<p class=\"time\">")[1].split("</p>")[0];
@@ -145,52 +173,137 @@ public class FeedFragment extends SherlockFragment implements
 			imgUrl = newsContent.split("<img class=\"heading center\" src=\"")[1]
 					.split("/>")[0].replaceAll("\"", "").replaceAll(" ", "");
 
-			c = Calendar.getInstance();
-			currentTime = c.get(Calendar.MINUTE);
-			currentTime = c.get(Calendar.HOUR);
+			// format <div class="time">15 กันยายน 2556, 15:08 น.</div>
 
-			time = time.split(",")[1];
+			int year = (Integer.parseInt(time.split(",")[0].split(" ")[2])) - 543;// convert
+																					// to
+																					// bc
+			int month = this.getMonthInteger(time.split(",")[0].split(" ")[1]);
+			int day = Integer.parseInt(time.split(",")[0].split(" ")[0]);
+			int hour = Integer
+					.parseInt(time.split(",")[1].split(":")[0].trim());
+			int minute = Integer
+					.parseInt(time.split(":")[1].trim().split(" ")[0]);
 
-			// for smooth parsing
-			String hour = time.split(":")[0].trim();
-			String minute = time.split(":")[1].trim().split(" ")[0];
-			System.out.println(hour);
+			// joda time
+			DateTime newsTime = new DateTime(year, month, day, hour, minute, 0,
+					0);
+			DateTime currentTime = new DateTime();
 
-			/*
-			 * if( (hour.charAt(0)+"").equals("0") ){ hour = hour.charAt(1)+"";
-			 * }
-			 * 
-			 * if( (minute.charAt(0)+"").equals("0") ){ minute =
-			 * hour.charAt(1)+""; }
-			 */
+			Log.i(tag, "start: " + newsTime.getMillis() + "");
+			Log.i(tag, "end: " + currentTime.getMillis() + "");
 
-			if (c.get(Calendar.HOUR) > Integer.parseInt(hour)) {
-				time = (c.get(Calendar.HOUR) - Integer.parseInt(hour)) + " "
+			Duration dur = new Duration(newsTime, currentTime);
+			System.out.println("input time: " + year + "," + month + "," + day
+					+ "," + hour + "," + minute);
+			System.out.println("joda time: " + dur.getMillis() / 1000);
+
+			Log.i(tag,
+					dur.getStandardSeconds() + "," + dur.getStandardMinutes()
+							+ "," + dur.getStandardHours() + ","
+							+ dur.getStandardDays());
+
+			if (dur.getStandardDays() > 0) {
+				time = dur.getStandardDays() + " "
+						+ getString(R.string.pass_day_text);
+			} else if (dur.getStandardHours() > 0) {
+				time = dur.getStandardHours() + " "
 						+ getString(R.string.pass_hour_text);
-			} else if (c.get(Calendar.MINUTE) > Integer.parseInt(minute)) {
-				time = (c.get(Calendar.MINUTE) - Integer.parseInt(minute))
-						+ " " + getString(R.string.pass_minute_text);
+			} else if (dur.getStandardMinutes() > 0) {
+				time = dur.getStandardMinutes() + " "
+						+ getString(R.string.pass_minute_text);
 			} else {
 				time = getString(R.string.pass_second_text);
 			}
-
-			System.out.println(c.get(Calendar.MINUTE));
-			System.out.println(c.get(Calendar.HOUR));
 
 			this.n.title = title;
 			this.n.imgUrl = imgUrl;
 			this.n.description = newsContent;
 			this.n.time = time;
+			this.n.unixTime = newsTime.getMillis();
+			this.n.stampTime = currentTime.getMillis();
 
-			// remove yesterday news
-			if (c.get(Calendar.HOUR) < Integer.parseInt(hour)) {
-				time = (c.get(Calendar.HOUR) - Integer.parseInt(hour)) + ""
-						+ getString(R.string.pass_hour_text);
-				Info.newsList.remove(n);
+		}
+
+		public void dailyNewsParser(String result) {
+
+			try {
+				title = result.split("<title>")[1].split(" | ")[0];
+				imgUrl = result.split("<div class=\"main-image\"><img src=\"")[1]
+						.split("\"")[0];
+				time = result.split("<div class=\"published-date\">")[1]
+						.split("</div>")[0];
+
+				int year = (Integer.parseInt(time.split(" ")[3])) - 543;// convert
+				int month = this.getMonthInteger(time.split(" ")[2]);
+				int day = Integer.parseInt(time.split(" ")[1]);
+				// <div class="published-date">วันศุกร์ที่ 13 กันยายน 2556 เวลา
+				// 22:09 น.</div>
+				int minute = Integer.parseInt(time.split(" ")[5].split(":")[1]);
+				int hour = Integer.parseInt(time.split(" ")[5].split(":")[0]);
+
+				DateTime newsTime = new DateTime(year, month, day, hour,
+						minute, 0, 0);
+				DateTime currentTime = new DateTime();
+
+				Duration dur = new Duration(newsTime, currentTime);
+
+				if (dur.getStandardDays() > 0) {
+					time = dur.getStandardDays() + " "
+							+ getString(R.string.pass_day_text);
+				} else if (dur.getStandardHours() > 0) {
+					time = dur.getStandardHours() + " "
+							+ getString(R.string.pass_hour_text);
+				} else if (dur.getStandardMinutes() > 0) {
+					time = dur.getStandardMinutes() + " "
+							+ getString(R.string.pass_minute_text);
+				} else {
+					time = getString(R.string.pass_second_text);
+				}
+
+				this.n.title = title;
+				this.n.imgUrl = imgUrl;
+				this.n.description = newsContent;
+				this.n.time = time;
+				this.n.unixTime = newsTime.getMillis();
+				this.n.stampTime = currentTime.getMillis();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				Info.newsList.remove(this.n);
+				return;
 			}
-			// update only when complete
-			reloadViewAfterRequestTaskComplete();
 
+		}
+
+		public int getMonthInteger(String month) {
+			if (month.equalsIgnoreCase(getString(R.string.january))) {
+				return 1;
+			} else if (month.equalsIgnoreCase(getString(R.string.february))) {
+				return 2;
+			} else if (month.equalsIgnoreCase(getString(R.string.march))) {
+				return 3;
+			} else if (month.equalsIgnoreCase(getString(R.string.april))) {
+				return 4;
+			} else if (month.equalsIgnoreCase(getString(R.string.may))) {
+				return 5;
+			} else if (month.equalsIgnoreCase(getString(R.string.june))) {
+				return 6;
+			} else if (month.equalsIgnoreCase(getString(R.string.july))) {
+				return 7;
+			} else if (month.equalsIgnoreCase(getString(R.string.august))) {
+				return 8;
+			} else if (month.equalsIgnoreCase(getString(R.string.september))) {
+				return 9;
+			} else if (month.equalsIgnoreCase(getString(R.string.october))) {
+				return 10;
+			} else if (month.equalsIgnoreCase(getString(R.string.november))) {
+				return 11;
+			} else if (month.equalsIgnoreCase(getString(R.string.december))) {
+				return 12;
+			}
+
+			return 0;
 		}
 
 	}
@@ -202,6 +315,7 @@ public class FeedFragment extends SherlockFragment implements
 		@Override
 		protected String doInBackground(String... uri) {
 			this.providerUrl = uri[0];
+			Log.i(tag, "request: " + this.providerUrl);
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpResponse response;
 			String responseString = null;
@@ -235,22 +349,58 @@ public class FeedFragment extends SherlockFragment implements
 		}
 
 		public void responseStringParser(String result) {
+
+			if (this.providerUrl.equalsIgnoreCase("http://m.thairath.co.th/")) {
+				this.mThairathParser(result);
+			}
+
+			if (this.providerUrl.equalsIgnoreCase("http://m.dailynews.co.th/")) {
+				this.mDailyNewsParser(result);
+			}
+
+		}
+
+		public void mDailyNewsParser(String result) {
+			String a[] = result.split(" <a href=\"/");
+			for (int i = 1; i < a.length; i++) {
+				String link = a[i].split("\"")[0];
+				Log.i(tag, link);
+				String urlDetail = this.providerUrl + link;
+				News n = new News(this.providerUrl, link, link, urlDetail,
+						"loading...");
+				n.title = "Loading...";
+				Info.uniqueAdd(n);
+
+			}
+			Log.i(tag, "responseStringParser");
+
+			// on post exucute
+			for (int i = 0; i < Info.newsList.size(); i++) {
+				Log.i(tag, Info.newsList.get(i).urlContent);
+				new RequestNewsContent(Info.newsList.get(i))
+						.execute(Info.newsList.get(i).urlContent);
+			}
+		}
+
+		public void mThairathParser(String result) {
 			String a[] = result.split("<a href=\"/content/");
-			// ignore html header
 			for (int i = 1; i < a.length; i++) {
 				String link = a[i].split("\">")[0];
 				link = "/content/" + link;
-				News n = new News(this.providerUrl.split("[.]")[1], link, link,
+				News n = new News(this.providerUrl, link, link,
 						this.providerUrl + link, "loading...");
+				n.title = "Loading...";
 				Info.uniqueAdd(n);
 			}
+			Log.i(tag, "responseStringParser");
+
 			// on post exucute
 			for (int i = 0; i < Info.newsList.size(); i++) {
 				new RequestNewsContent(Info.newsList.get(i))
 						.execute(Info.newsList.get(i).urlContent);
 			}
-
 		}
+
 	}
 
 }
