@@ -21,7 +21,6 @@ public class FeedListViewAdapter extends BaseAdapter {
 	private ArrayList<News> newsList;
 	private LayoutInflater inflater = null;
 	private TextView description = null;
-	private ImageView iv = null;
 	private ImageView providerIcon=null;
 	private TextView reporterText = null;
 	private AQuery aq = null;
@@ -43,29 +42,32 @@ public class FeedListViewAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		// for better performance
-		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.news_fragment_listview,
+
+		convertView = inflater.inflate(R.layout.news_fragment_listview,
 					parent, false);
 
-		}
-		// else{
-		iv = (ImageView) convertView.findViewById(R.id.newsIcon);
+		final ImageView iv = (ImageView) convertView.findViewById(R.id.newsIcon);
 		aq.id(iv).image(this.newsList.get(position).imgUrl, true, true,200, 0);
 		
-		providerIcon =(ImageView) convertView.findViewById(R.id.providerIcon);
+		final ImageView providerIcon =(ImageView) convertView.findViewById(R.id.providerIcon);
 		if(this.newsList.get(position).provider.indexOf("thairath") != -1){
 			providerIcon.setImageResource(R.drawable.thairath);
 		}
 		else if(this.newsList.get(position).provider.indexOf("dailynews") != -1){
-			providerIcon.setImageResource(R.drawable.dailynews);
+			providerIcon.setImageResource(R.drawable.daily);
+		}
+		else if(this.newsList.get(position).provider.indexOf("blognone") != -1){
+			providerIcon.setImageResource(R.drawable.blognone);
+		}
+		else if(this.newsList.get(position).provider.indexOf("posttoday") != -1){
+			providerIcon.setImageResource(R.drawable.posttoday);
 		}
 		
-		description = (TextView) convertView.findViewById(R.id.newsText);
+		final TextView description = (TextView) convertView.findViewById(R.id.newsText);
 		description.setText(this.newsList.get(position).title);
 
-		reporterText = (TextView) convertView.findViewById(R.id.fromText);
-		reporterText.setText(this.newsList.get(position).time);
+		final TextView reporterText = (TextView) convertView.findViewById(R.id.fromText);
+		reporterText.setText(this.newsList.get(position).showtime);
 
 		return convertView;
 

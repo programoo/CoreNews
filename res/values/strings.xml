@@ -23,6 +23,7 @@
     <string name="other_text">ทั่วไป</string>
 
     <!-- thai translate -->
+    <string name="n_string">น</string>
     <string name="from_text">ที่มา</string>
     <string name="by_text">โดย</string>
     <string name="dailynews_text">เดลินิวส์</string>

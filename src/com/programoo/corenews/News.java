@@ -4,7 +4,7 @@ package com.programoo.corenews;
 public class News {
 	String provider;
 	String id;
-	String time;
+	String showtime;
 	String urlContent;
 	String description;
 
@@ -18,13 +18,13 @@ public class News {
 			String description) {
 		this.provider = provider;
 		this.id = id;
-		this.time = time;
+		this.showtime = time;
 		this.urlContent = urlContent;
 		this.description = description;
 	}
 	
 	@Override
 	public String toString() {
-		return id + "," + time + "," + description;
+		return id + "," + showtime + "," + description;
 	}
 }

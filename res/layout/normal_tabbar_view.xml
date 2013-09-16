@@ -19,7 +19,7 @@
         android:id="@+id/normal_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/normal_icon"
+        android:layout_toRightOf="@+id/normal_icon"
         android:layout_centerHorizontal="true"
         android:textStyle="bold" />
 
