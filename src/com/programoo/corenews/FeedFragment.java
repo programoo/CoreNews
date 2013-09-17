@@ -15,6 +15,8 @@ import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -370,6 +372,24 @@ public class FeedFragment extends SherlockFragment implements
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
+			//if result == null aleart message to user
+			if (result == null) {
+				new AlertDialog.Builder(getActivity())
+						.setMessage(
+								getString( R.string.internet_disconnect_aleart_msg) )
+						.setPositiveButton("OK",
+								new DialogInterface.OnClickListener() {
+									public void onClick(
+											DialogInterface dialog,
+											int which) {
+										// continue with delete
+										return;
+									}
+						}).show();
+
+			}
+			
+			Log.d(tag,"result: "+result);
 			Log.d(tag, "response: " + "onPostExecute");
 			if (this.providerUrl.equalsIgnoreCase("http://m.thairath.co.th/")) {
 				this.mThairathParser(result);

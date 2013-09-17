@@ -42,14 +42,14 @@ public class FeedListViewAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-
+		if(convertView == null)
 		convertView = inflater.inflate(R.layout.news_fragment_listview,
 					parent, false);
-
-		final ImageView iv = (ImageView) convertView.findViewById(R.id.newsIcon);
-		aq.id(iv).image(this.newsList.get(position).imgUrl, true, true,200, 0);
 		
-		final ImageView providerIcon =(ImageView) convertView.findViewById(R.id.providerIcon);
+		ImageView iv = (ImageView) convertView.findViewById(R.id.newsIcon);
+		aq.id(iv).image(this.newsList.get(position).imgUrl, true, true,200, 0);
+		//aq.id(iv).image
+		ImageView providerIcon =(ImageView) convertView.findViewById(R.id.providerIcon);
 		if(this.newsList.get(position).provider.indexOf("thairath") != -1){
 			providerIcon.setImageResource(R.drawable.thairath);
 		}
@@ -63,12 +63,12 @@ public class FeedListViewAdapter extends BaseAdapter {
 			providerIcon.setImageResource(R.drawable.posttoday);
 		}
 		
-		final TextView description = (TextView) convertView.findViewById(R.id.newsText);
+		TextView description = (TextView) convertView.findViewById(R.id.newsText);
 		description.setText(this.newsList.get(position).title);
 
-		final TextView reporterText = (TextView) convertView.findViewById(R.id.fromText);
+		TextView reporterText = (TextView) convertView.findViewById(R.id.fromText);
 		reporterText.setText(this.newsList.get(position).showtime);
-
+		
 		return convertView;
 
 	}

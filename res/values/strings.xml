@@ -23,6 +23,7 @@
     <string name="other_text">ทั่วไป</string>
 
     <!-- thai translate -->
+    <string name="internet_disconnect_aleart_msg">การเชื่อมต่อมีปัญหา กรุณาตรวจสอบการเชื่อมต่ออีกครั้ง</string>
     <string name="n_string">น</string>
     <string name="from_text">ที่มา</string>
     <string name="by_text">โดย</string>
