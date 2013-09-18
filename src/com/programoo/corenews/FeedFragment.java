@@ -2,6 +2,8 @@ package com.programoo.corenews;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -29,21 +31,31 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragment;
+import com.androidquery.AQuery;
+import com.androidquery.callback.AjaxCallback;
+import com.androidquery.callback.AjaxStatus;
+import com.androidquery.util.XmlDom;
 import com.programoo.snews.R;
 
 public class FeedFragment extends SherlockFragment implements
 		OnItemClickListener {
-	private String tag = this.getClass().getSimpleName();
+	private String TAG = this.getClass().getSimpleName();
 	private View newsFragment;
 	FeedListViewAdapter ardap;
 	private ListView lv;
-	private DateTimeFormatter formatter = DateTimeFormat
-			.forPattern("dd/MM/yy HH:mm:ss");
+	private AQuery aq;
+	private ArrayList<News> tempList;
+	private DateTimeFormatter formatter;
+	private ArrayList<String> imgUrlList1;
+	private int imageId;
+	private News newsUnImgFocus;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		formatter = DateTimeFormat.forPattern("dd/MM/yy HH:mm:ss");
+		aq = new AQuery(getActivity());
+		imageId = 0;
 	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,7 +65,7 @@ public class FeedFragment extends SherlockFragment implements
 		lv = (ListView) newsFragment.findViewById(R.id.list1Fragment);
 		ardap = new FeedListViewAdapter(getActivity(), Info.newsList);
 		lv.setAdapter(ardap);
-		Log.d(tag, "onCreateView");
+		Log.d(TAG, "onCreateView");
 		lv.setOnItemClickListener(this);
 
 		return newsFragment;
@@ -67,7 +79,194 @@ public class FeedFragment extends SherlockFragment implements
 		// new RequestTask().execute("http://m.thairath.co.th/");
 		// new RequestTask().execute("http://www.blognone.com/");
 		// new RequestTask().execute("http://m.posttoday.com/");
-		new RequestTask().execute("http://www.blognone.com/atom.xml/");
+		// new RequestTask().execute("http://www.blognone.com/atom.xml/");
+
+		// using Aquery for RSS feed reader
+		//String url = "http://www.blognone.com/atom.xml";
+		//String url = "http://www.thairath.co.th/rss/news.xml";
+		String url = "http://www.dailynews.co.th/rss.xml";
+		aq.ajax(url, XmlDom.class, this, "picasaCb");
+
+	}
+
+	public void picasaCb(String url, XmlDom xml, AjaxStatus status) {
+
+		List<XmlDom> entries = xml.tags("item");
+		List<String> titles = new ArrayList<String>();
+
+		tempList = new ArrayList<News>();
+
+		for (XmlDom entry : entries) {
+
+			String titleStr = entry.text("title");
+			String link = entry.text("link");
+			String description = entry.text("description");
+			String pubDate = entry.text("pubDate");
+			String dcCreator = entry.text("dc:creator");
+
+			News n = new News(url, titleStr, link, description, pubDate,
+					dcCreator);
+			n.imgUrl = descriptionParser(description);
+			n.urlContent = link;
+			tempList.add(n);
+			Info.uniqueAdd(n);
+			// Log.i(TAG, titleStr + "," +
+			// link+","+descriptionParser(description));
+			titles.add(titleStr);
+
+		}
+
+		// if null image found try to search for content
+		// need 2 index for compare
+		if (tempList.size() >= 5) {
+			String urlTemp1 = tempList.get(2).link;
+			aq.ajax(urlTemp1, String.class, new AjaxCallback<String>() {
+
+				@Override
+				public void callback(String url, String html, AjaxStatus status) {
+					diffImageUrl(html);
+				}
+
+			});
+
+		}
+
+		// reload view
+		this.reloadView();
+	}
+	public void reloadView(){
+		FeedListViewAdapter ardap = new FeedListViewAdapter(getActivity(),
+				Info.newsList);
+		lv.setAdapter(ardap);
+	}
+
+	public void diffImageUrl(String html) {
+		imgUrlList1 = new ArrayList<String>();
+		String imgUrl1[] = html.split("<img");
+		Log.i(TAG, "real image1: " + imgUrl1.length);
+
+		for (int i = 0; i < imgUrl1.length; i++) {
+
+			if (imgUrl1[i].split("src=\"").length >= 2) {
+				String imgUrlReal = imgUrl1[i].split("src=\"")[1].split("\"")[0];
+				Log.i(TAG, "real image1 unuse: " + imgUrlReal);
+
+				if (imgUrlReal.indexOf(".js") == -1
+						&& imgUrlReal.indexOf("http:") != -1) {
+					Log.i(TAG, "real image1: " + imgUrlReal);
+					imgUrlList1.add(imgUrlReal);
+				}
+			}
+		}
+		// compare with next item
+
+		String urlTemp1 = tempList.get(3).link;
+
+		aq.ajax(urlTemp1, String.class, new AjaxCallback<String>() {
+			ArrayList<String> imgUrlList2 = new ArrayList<String>();
+
+			@Override
+			public void callback(String url, String html, AjaxStatus status) {
+				String imgUrl[] = html.split("<img");
+				Log.i(TAG, "image2: " + imgUrl.length);
+
+				for (int i = 0; i < imgUrl.length; i++) {
+
+					if (imgUrl[i].split("src=\"").length >= 2) {
+						String imgUrlReal = imgUrl[i].split("src=\"")[1]
+								.split("\"")[0];
+						if (imgUrlReal.indexOf(".js") == -1
+								&& imgUrlReal.indexOf("http:") != -1) {
+							Log.i(TAG, "real image2: " + imgUrlReal);
+							imgUrlList2.add(imgUrlReal);
+						}
+					}
+				}
+				for (int i = 0; i < imgUrlList1.size(); i++) {
+					if (i < imgUrlList2.size()) {
+						Log.i(TAG, "COMPARE: " + imgUrlList1.get(i)
+								+ ",,,,,,,,,,,,,,,,,,," + imgUrlList2.get(i));
+						Log.i(TAG,
+								"RESULT: "
+										+ imgUrlList1.get(i).equals(
+												imgUrlList2.get(i)));
+						// FOUND !!
+						if (!imgUrlList1.get(i).equals(imgUrlList2.get(i))) {
+							imageId = i;
+							parseImageForSpecificProviderByImageId();
+							Log.i(TAG,"start parsing image id: "+imageId);
+							break;
+						}
+
+					} else {
+						break;
+					}
+
+				}
+			}
+
+		});
+
+	}
+
+	public void parseImageForSpecificProviderByImageId() {
+
+		for (int i = 0; i < this.tempList.size(); i++) {
+			//if (this.tempList.get(i).imgUrl == null) {
+				newsUnImgFocus = this.tempList.get(i);
+				aq.ajax(this.tempList.get(i).link, String.class,
+						new AjaxCallback<String>() {
+
+							@Override
+							public void callback(String url, String html,
+									AjaxStatus status) {
+								// parser for that URL
+								String imgUrl[] = html.split("<img");
+								Log.i(TAG, "image2: " + imgUrl.length);
+								int indexFilter=0;
+								for (int i = 0; i < imgUrl.length; i++) {
+									//Log.i(TAG,"parse this: "+imgUrl[i].split("src=\"")[1].split("\"")[0]+"");
+									
+									if (imgUrl[i].split("src=\"").length >= 2) {
+										
+										String imgUrlReal = imgUrl[i].split("src=\"")[1]
+												.split("\"")[0];
+										if (imgUrlReal.indexOf(".js") == -1
+												&& imgUrlReal.indexOf("http:") != -1) {
+											if(indexFilter == imageId){
+												Log.i(TAG, "real SETTING THIS IMAGE: " + imgUrlReal);
+												Info.getNewsByLink(url).imgUrl = imgUrlReal;
+												reloadView();
+												
+												
+												++indexFilter;
+											}
+											
+											//imgUrlList2.add(imgUrlReal);
+										}
+									}
+								}
+								
+								
+								
+								
+								
+
+							}
+						});
+
+			//}
+		}
+
+	}
+
+	public String descriptionParser(String description) {
+		String result = null;
+		if (description.indexOf("img src=\"") != -1) {
+			return description.split("img src=\"")[1].split("\"")[0];
+		}
+
+		return result;
 	}
 
 	@Override
@@ -77,7 +276,7 @@ public class FeedFragment extends SherlockFragment implements
 	}
 
 	public void reloadViewAfterRequestTaskComplete() {
-		Log.d(tag, "reloadViewAfterRequestTaskComplete");
+		Log.d(TAG, "reloadViewAfterRequestTaskComplete");
 
 		FeedListViewAdapter ardap = new FeedListViewAdapter(getActivity(),
 				Info.newsList);
@@ -407,17 +606,18 @@ public class FeedFragment extends SherlockFragment implements
 			if (this.providerUrl.equalsIgnoreCase("http://m.posttoday.com/")) {
 				this.mPostodayParser(result);
 			}
-			
-			if (this.providerUrl.equalsIgnoreCase("http://www.blognone.com/atom.xml/")) {
+
+			if (this.providerUrl
+					.equalsIgnoreCase("http://www.blognone.com/atom.xml/")) {
 				this.blognoneXmlParser(result);
 			}
 		}
-		
-		public void blognoneXmlParser(String result){
-			//Log.i(tag,result);
+
+		public void blognoneXmlParser(String result) {
+			// Log.i(tag,result);
 			Info.longInfo(tag, result);
 		}
-		
+
 		public void mBlognoneParser(String result) {
 			try {
 

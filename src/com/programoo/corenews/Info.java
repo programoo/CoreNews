@@ -13,6 +13,15 @@ public class Info {
 		Info.newsList.add(n);
 	}
 	
+	public static News getNewsByLink(String link){
+		for(int i=0;i<Info.newsList.size();i++){
+			if(Info.newsList.get(i).link.equals(link)){
+				return Info.newsList.get(i);
+			}
+		}
+		return null;
+	}
+	
 	public static void longInfo(String tag,String str) {
 	    if(str.length() > 4000) {
 	        Log.i(tag,str.substring(0, 4000));

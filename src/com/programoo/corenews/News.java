@@ -7,6 +7,10 @@ public class News {
 	String showtime;
 	String urlContent;
 	String description;
+	
+	//String title;
+	String link;
+	//String description;
 
 	// update later
 	String imgUrl = "undefined";
@@ -14,6 +18,14 @@ public class News {
 	long unixTime = 0;
 	long stampTime = 0;
 
+	public News(String provider,String title,String link,String description,String time,String reporter){
+		this.provider = provider;
+		this.title = title;
+		this.link = link;
+		this.id = link;//re-create later
+		this.description = description;
+	}
+	
 	public News(String provider, String id, String time, String urlContent,
 			String description) {
 		this.provider = provider;
