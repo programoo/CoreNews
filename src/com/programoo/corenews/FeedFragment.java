@@ -37,7 +37,8 @@ public class FeedFragment extends SherlockFragment implements
 	private View newsFragment;
 	FeedListViewAdapter ardap;
 	private ListView lv;
-	private DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yy HH:mm:ss");
+	private DateTimeFormatter formatter = DateTimeFormat
+			.forPattern("dd/MM/yy HH:mm:ss");
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -62,10 +63,11 @@ public class FeedFragment extends SherlockFragment implements
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onViewCreated(view, savedInstanceState);
-		new RequestTask().execute("http://m.dailynews.co.th/");
-		new RequestTask().execute("http://m.thairath.co.th/");
-		new RequestTask().execute("http://www.blognone.com/");
-		new RequestTask().execute("http://m.posttoday.com/");
+		// new RequestTask().execute("http://m.dailynews.co.th/");
+		// new RequestTask().execute("http://m.thairath.co.th/");
+		// new RequestTask().execute("http://www.blognone.com/");
+		// new RequestTask().execute("http://m.posttoday.com/");
+		new RequestTask().execute("http://www.blognone.com/atom.xml/");
 	}
 
 	@Override
@@ -115,7 +117,7 @@ public class FeedFragment extends SherlockFragment implements
 
 		return alreadyPassTime;
 	}
-	
+
 	private class RequestNewsContent extends AsyncTask<String, String, String> {
 		private String tag = this.getClass().getSimpleName();
 		private News n;
@@ -372,24 +374,23 @@ public class FeedFragment extends SherlockFragment implements
 		@Override
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
-			//if result == null aleart message to user
+			// if result == null aleart message to user
 			if (result == null) {
 				new AlertDialog.Builder(getActivity())
 						.setMessage(
-								getString( R.string.internet_disconnect_aleart_msg) )
+								getString(R.string.internet_disconnect_aleart_msg))
 						.setPositiveButton("OK",
 								new DialogInterface.OnClickListener() {
-									public void onClick(
-											DialogInterface dialog,
+									public void onClick(DialogInterface dialog,
 											int which) {
 										// continue with delete
 										return;
 									}
-						}).show();
+								}).show();
 
 			}
-			
-			Log.d(tag,"result: "+result);
+
+			Log.d(tag, "result: " + result);
 			Log.d(tag, "response: " + "onPostExecute");
 			if (this.providerUrl.equalsIgnoreCase("http://m.thairath.co.th/")) {
 				this.mThairathParser(result);
@@ -398,37 +399,46 @@ public class FeedFragment extends SherlockFragment implements
 			if (this.providerUrl.equalsIgnoreCase("http://m.dailynews.co.th/")) {
 				this.mDailyNewsParser(result);
 			}
-			
+
 			if (this.providerUrl.equalsIgnoreCase("http://www.blognone.com/")) {
 				this.mBlognoneParser(result);
 			}
-			
+
 			if (this.providerUrl.equalsIgnoreCase("http://m.posttoday.com/")) {
 				this.mPostodayParser(result);
 			}
+			
+			if (this.providerUrl.equalsIgnoreCase("http://www.blognone.com/atom.xml/")) {
+				this.blognoneXmlParser(result);
+			}
 		}
-
-		public void mBlognoneParser(String result){
+		
+		public void blognoneXmlParser(String result){
+			//Log.i(tag,result);
+			Info.longInfo(tag, result);
+		}
+		
+		public void mBlognoneParser(String result) {
 			try {
 
-				//special case in blognone we parse complete in first step
-				
+				// special case in blognone we parse complete in first step
+
 				String a[] = result.split("<h2 itemprop=\"name\"><a href=\"");
-				String img[] = result.split("<div class=\"node-image\" ><img src=\"");
+				String img[] = result
+						.split("<div class=\"node-image\" ><img src=\"");
 				String newsTime[] = result.split("</span> on ");
-				
-				
-				
+
 				for (int i = 1; i < a.length; i++) {
 					String link = a[i].split("\"")[0];
 					String imgUrl = img[i].split("\"")[0];
-					String splitWord = "<h2 itemprop=\"name\"><a href=\""+link+"\" title=\"";
+					String splitWord = "<h2 itemprop=\"name\"><a href=\""
+							+ link + "\" title=\"";
 					String title = result.split(splitWord)[1].split("\"")[0];
-					
+
 					String time = newsTime[i].split("</span>")[0];
-					time= time+":00";
+					time = time + ":00";
 					DateTime dt = formatter.parseDateTime(time);
-					Log.i(tag,time);				
+					Log.i(tag, time);
 					Log.i(tag, link);
 					String urlDetail = "http://m.blognone.com/" + link;
 
@@ -439,61 +449,61 @@ public class FeedFragment extends SherlockFragment implements
 					n.title = title;
 					n.unixTime = dt.getMillis();
 					n.showtime = getHumanLanguageTime(dt);
-					
+
 					Info.uniqueAdd(n);
 
 				}
-				Log.i(tag, "responseStringParser: "+this.providerUrl);
+				Log.i(tag, "responseStringParser: " + this.providerUrl);
 				/*
-				// on post exucute
-				for (int i = 0; i < Info.newsList.size(); i++) {
-					Log.i(tag, Info.newsList.get(i).urlContent);
-					new RequestNewsContent(Info.newsList.get(i))
-							.execute(Info.newsList.get(i).urlContent);
-				}
-				*/
+				 * // on post exucute for (int i = 0; i < Info.newsList.size();
+				 * i++) { Log.i(tag, Info.newsList.get(i).urlContent); new
+				 * RequestNewsContent(Info.newsList.get(i))
+				 * .execute(Info.newsList.get(i).urlContent); }
+				 */
 				reloadViewAfterRequestTaskComplete();
-				
 
 			} catch (Exception e) {
 				e.printStackTrace();
 
 			}
 		}
-	
-		public void mPostodayParser(String result){
+
+		public void mPostodayParser(String result) {
 			try {
 
-				//special case in blognone we parse complete in first step
-				
+				// special case in blognone we parse complete in first step
+
 				String a[] = result.split("<p class=\"thumbnail\"><a href=\"");
-								
+
 				for (int i = 1; i < a.length; i++) {
 					String link = a[i].split("\"")[0];
 
-					String imgUrl = a[i].split("src=\"")[1].split("\"")[0];					
-					String title = a[i].split("<img alt=\"")[1].split("width=\"")[0];
-					
-					String time = a[i].split("<li class=\"date\">")[1].split("</li>")[0];
-					Log.i(tag,time);
-										
-					int day = Integer.parseInt( time.split(" ")[1] );
-					int month = new DateTime().getMonthOfYear();//lazy code edit later
+					String imgUrl = a[i].split("src=\"")[1].split("\"")[0];
+					String title = a[i].split("<img alt=\"")[1]
+							.split("width=\"")[0];
+
+					String time = a[i].split("<li class=\"date\">")[1]
+							.split("</li>")[0];
+					Log.i(tag, time);
+
+					int day = Integer.parseInt(time.split(" ")[1]);
+					int month = new DateTime().getMonthOfYear();// lazy code
+																// edit later
 					int year = new DateTime().getYear();
-					
-					String timeNews = time.split(", ")[1].replace(getString(R.string.n_string)+".", ":00");
-					int hour = Integer.parseInt( timeNews.split(":")[0] );
-					int minute = Integer.parseInt( timeNews.split(":")[1] );
 
-					DateTime dt = new DateTime(year, month, day, hour,
-							minute, 0, 0);
+					String timeNews = time.split(", ")[1].replace(
+							getString(R.string.n_string) + ".", ":00");
+					int hour = Integer.parseInt(timeNews.split(":")[0]);
+					int minute = Integer.parseInt(timeNews.split(":")[1]);
 
-					
-					Log.i(tag,time);
-					Log.i(tag,timeNews);
-					
+					DateTime dt = new DateTime(year, month, day, hour, minute,
+							0, 0);
+
+					Log.i(tag, time);
+					Log.i(tag, timeNews);
+
 					Log.i(tag, link);
-					
+
 					String urlDetail = link;
 
 					News n = new News(this.providerUrl, link, link, urlDetail,
@@ -503,21 +513,18 @@ public class FeedFragment extends SherlockFragment implements
 					n.title = title;
 					n.unixTime = dt.getMillis();
 					n.showtime = getHumanLanguageTime(dt);
-					
+
 					Info.uniqueAdd(n);
 
 				}
-				Log.i(tag, "responseStringParser: "+this.providerUrl);
+				Log.i(tag, "responseStringParser: " + this.providerUrl);
 				/*
-				// on post exucute
-				for (int i = 0; i < Info.newsList.size(); i++) {
-					Log.i(tag, Info.newsList.get(i).urlContent);
-					new RequestNewsContent(Info.newsList.get(i))
-							.execute(Info.newsList.get(i).urlContent);
-				}
-				*/
+				 * // on post exucute for (int i = 0; i < Info.newsList.size();
+				 * i++) { Log.i(tag, Info.newsList.get(i).urlContent); new
+				 * RequestNewsContent(Info.newsList.get(i))
+				 * .execute(Info.newsList.get(i).urlContent); }
+				 */
 				reloadViewAfterRequestTaskComplete();
-				
 
 			} catch (Exception e) {
 				e.printStackTrace();
