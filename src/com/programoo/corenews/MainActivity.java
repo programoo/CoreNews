@@ -1,5 +1,7 @@
 package com.programoo.corenews;
 
+import java.util.ArrayList;
+
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -22,6 +24,8 @@ public class MainActivity extends SherlockFragmentActivity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
 		setContentView(R.layout.activity_main);
+		
+		//initialize global variable
 		
 		Log.d(tag, "onCreate");
 

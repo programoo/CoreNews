@@ -47,9 +47,9 @@ public class FeedListViewAdapter extends BaseAdapter {
 					parent, false);
 		
 		ImageView iv = (ImageView) convertView.findViewById(R.id.newsIcon);
-		aq.id(iv).image(this.newsList.get(position).imgUrl, true, false,200, 0);
 		//aq.id(iv).image(this.newsList.get(position).imgUrl, true, false,200, 0);
-		//aq.id(iv).image(this.newsList.get(position).imgUrl);
+		//aq.id(iv).image(this.newsList.get(position).imgUrl, true, false,200, 0);
+		aq.id(iv).image(this.newsList.get(position).imgUrl);
 		
 		//aq.id(iv).image
 		ImageView providerIcon =(ImageView) convertView.findViewById(R.id.providerIcon);
