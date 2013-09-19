@@ -3,6 +3,7 @@ package com.programoo.corenews;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -49,6 +50,11 @@ public class FeedFragment extends SherlockFragment implements
 	private ArrayList<String> imgUrlList1;
 	private int imageId;
 	private News newsUnImgFocus;
+	private HashMap<String,Integer> providerImgIdx ;
+
+	String blognone = "http://www.blognone.com/atom.xml";
+	String thairath = "http://www.thairath.co.th/rss/news.xml";
+	String dailynews = "http://www.dailynews.co.th/rss.xml";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +62,7 @@ public class FeedFragment extends SherlockFragment implements
 		formatter = DateTimeFormat.forPattern("dd/MM/yy HH:mm:ss");
 		aq = new AQuery(getActivity());
 		imageId = 0;
+		providerImgIdx = new HashMap<String,Integer>();
 	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,13 +86,26 @@ public class FeedFragment extends SherlockFragment implements
 		// new RequestTask().execute("http://m.thairath.co.th/");
 		// new RequestTask().execute("http://www.blognone.com/");
 		// new RequestTask().execute("http://m.posttoday.com/");
-		// new RequestTask().execute("http://www.blognone.com/atom.xml/");
+		new SynchronousHtmlFetch().execute("http://www.blognone.com/atom.xml/");
 
 		// using Aquery for RSS feed reader
 		//String url = "http://www.blognone.com/atom.xml";
 		//String url = "http://www.thairath.co.th/rss/news.xml";
-		String url = "http://www.dailynews.co.th/rss.xml";
-		aq.ajax(url, XmlDom.class, this, "picasaCb");
+		//String url = "http://www.dailynews.co.th/rss.xml";
+		//String url = "http://www.komchadluek.net/rss.php";
+
+		//aq.sync(  aq.ajax(blognone, XmlDom.class, this, "picasaCb") );
+		
+		//String url = "http://www.google.com/uds/GnewsSearch?q=Obama&v=1.0";
+        /*
+		AjaxCallback<String> cb = new AjaxCallback<String>();           
+		cb.url(blognone).type(String.class);  
+		
+		aq.sync(cb);
+		*/
+		//aq.ajax(thairath, XmlDom.class, this, "picasaCb");
+		//aq.ajax(dailynews, XmlDom.class, this, "picasaCb");
+		//
 
 	}
 
@@ -132,8 +152,8 @@ public class FeedFragment extends SherlockFragment implements
 		}
 
 		// reload view
-		this.reloadView();
 	}
+	
 	public void reloadView(){
 		FeedListViewAdapter ardap = new FeedListViewAdapter(getActivity(),
 				Info.newsList);
@@ -167,6 +187,8 @@ public class FeedFragment extends SherlockFragment implements
 
 			@Override
 			public void callback(String url, String html, AjaxStatus status) {
+				//fetch synchronous
+				
 				String imgUrl[] = html.split("<img");
 				Log.i(TAG, "image2: " + imgUrl.length);
 
@@ -192,7 +214,14 @@ public class FeedFragment extends SherlockFragment implements
 												imgUrlList2.get(i)));
 						// FOUND !!
 						if (!imgUrlList1.get(i).equals(imgUrlList2.get(i))) {
-							imageId = i;
+							
+							
+							
+							
+							
+							providerImgIdx.put(Info.getNewsByLink(url).provider, i);
+							
+							//imageId = i;
 							parseImageForSpecificProviderByImageId();
 							Log.i(TAG,"start parsing image id: "+imageId);
 							break;
@@ -214,6 +243,7 @@ public class FeedFragment extends SherlockFragment implements
 		for (int i = 0; i < this.tempList.size(); i++) {
 			//if (this.tempList.get(i).imgUrl == null) {
 				newsUnImgFocus = this.tempList.get(i);
+				//if(false)
 				aq.ajax(this.tempList.get(i).link, String.class,
 						new AjaxCallback<String>() {
 
@@ -233,7 +263,10 @@ public class FeedFragment extends SherlockFragment implements
 												.split("\"")[0];
 										if (imgUrlReal.indexOf(".js") == -1
 												&& imgUrlReal.indexOf("http:") != -1) {
-											if(indexFilter == imageId){
+											
+											//Integer a = providerImgIdx.get(Info.getNewsByLink(url).provider);
+											
+											if(indexFilter == providerImgIdx.get(Info.getNewsByLink(url).provider) ){
 												Log.i(TAG, "real SETTING THIS IMAGE: " + imgUrlReal);
 												Info.getNewsByLink(url).imgUrl = imgUrlReal;
 												reloadView();
@@ -791,4 +824,50 @@ public class FeedFragment extends SherlockFragment implements
 
 	}
 
+	private class SynchronousHtmlFetch extends AsyncTask<String, String, String> {
+		private String TAG = getClass().getSimpleName();
+		private String url;
+
+		@Override
+		protected String doInBackground(String... uri) {
+			this.url = uri[0];
+			
+			AjaxCallback<XmlDom> cb = new AjaxCallback<XmlDom>();           
+			cb.url(blognone).type(XmlDom.class);  
+			Log.i(TAG,"Starting fetching");
+			aq.sync(cb);
+			XmlDom xmlResponse = cb.getResult();
+			AjaxStatus status = cb.getStatus();
+			picasaCb(url,xmlResponse,status);
+			
+			AjaxCallback<XmlDom> cb1 = new AjaxCallback<XmlDom>();           
+			cb1.url(dailynews).type(XmlDom.class);  
+			Log.i(TAG,"Starting fetching");
+			aq.sync(cb1);
+			xmlResponse = cb1.getResult();
+			status = cb1.getStatus();
+			picasaCb(url,xmlResponse,status);
+			/*
+			cb.url(blognone).type(XmlDom.class);  
+			Log.i(TAG,"Starting fetching");
+			aq.sync(cb);
+			xmlResponse = cb.getResult();
+			status = cb.getStatus();
+			picasaCb(url,xmlResponse,status);
+			*/
+			return "ok";
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			Log.i(TAG,"Final fetching: "+result);
+			reloadView();
+			
+
+		}
+
+	}
+
+	
 }
