@@ -351,10 +351,10 @@ public class FeedFragment extends SherlockFragment implements
 		protected String doInBackground(String... uri) {
 			this.url = uri[0];
 
-			// fetchHomePage(thairath);
-			// fetchHomePage(dailynews);
-			// fetchHomePage(blognone);
-			// fetchHomePage("www.posttoday.com/rss/src/breakingnews.xml");
+			fetchHomePage(thairath);
+			fetchHomePage(dailynews);
+			fetchHomePage(blognone);
+			fetchHomePage("www.posttoday.com/rss/src/breakingnews.xml");
 			
 			fetchHomePage("http://www.komchadluek.net/rss/news_widget.xml");
 

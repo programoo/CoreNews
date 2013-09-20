@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.ZoomDensity;
 import android.webkit.WebView;
 
 import com.programoo.snews.R;
@@ -23,6 +24,13 @@ public class WebViewActivity extends Activity {
 		WebView myWebView = (WebView) findViewById(R.id.webview);
 		WebSettings webSettings = myWebView.getSettings();
 		webSettings.setJavaScriptEnabled(true);
+		webSettings.setUseWideViewPort(true);
+		webSettings.setLoadWithOverviewMode(true);
+		
+		webSettings.setBuiltInZoomControls(true);
+		webSettings.setSupportZoom(true);
+		webSettings.setDefaultZoom(ZoomDensity.MEDIUM);
+		
 		myWebView.loadUrl(url);
 	}
 }
