@@ -5,9 +5,19 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
+    <ImageView
+        android:id="@+id/imageDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/hello_world"
+        android:layout_centerHorizontal="true">
+       
+    </ImageView>
+    
     <WebView
         android:id="@+id/webview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_below="@+id/imageDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

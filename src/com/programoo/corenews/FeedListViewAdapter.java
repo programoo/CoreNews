@@ -27,14 +27,12 @@ public class FeedListViewAdapter extends BaseAdapter
 	private AQuery aq = null;
 	private Typeface tf = null;
 	
-	public FeedListViewAdapter(Context context, ArrayList<News> newsList)
+	public FeedListViewAdapter(Context context, ArrayList<News> newsList,AQuery aq)
 	{
 		super();
 		this.context = context;
 		this.newsList = newsList;
-		
-		aq = new AQuery(this.context);
-		
+		this.aq = aq;
 		Log.d(tag, "FeedListViewAdapter");
 		
 	}
@@ -48,7 +46,7 @@ public class FeedListViewAdapter extends BaseAdapter
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			
 			this.tf = Typeface.createFromAsset(this.context.getAssets(),
-					"fonts/MicrosoftSansSerif.ttf");
+					"fonts/DroidSerif-Regular.ttf");
 			
 			convertView = inflater.inflate(R.layout.news_fragment_listview,
 					parent, false);
@@ -57,19 +55,8 @@ public class FeedListViewAdapter extends BaseAdapter
 		
 		ImageView iv = (ImageView) convertView.findViewById(R.id.newsIcon);
 		aq.id(iv)
-				.image(this.newsList.get(position).imgUrl, true, false, 200, 0);
-		// aq.id(iv).image(this.newsList.get(position).imgUrl, true, false,200,
-		// 0);
+				.image(this.newsList.get(position).imgUrl, true, true, 200, 0);
 		
-		// encode url for thai language
-		/*
-		 * String uri =
-		 * Uri.parse("http://...").buildUpon().appendQueryParameter("key",
-		 * "val").build().toString(); aq.id(iv).image(uri);
-		 */
-		
-		// aq.id(iv).image(this.newsList.get(position).imgUrl);
-		// aq.id(iv).image
 		ImageView providerIcon = (ImageView) convertView
 				.findViewById(R.id.providerIcon);
 		if (this.newsList.get(position).provider.indexOf("thairath") != -1)
@@ -94,7 +81,7 @@ public class FeedListViewAdapter extends BaseAdapter
 		
 		TextView reporterText = (TextView) convertView
 				.findViewById(R.id.fromText);
-		reporterText.setText(this.newsList.get(position).showtime);
+		reporterText.setText(this.newsList.get(position).pubDate);
 		
 		return convertView;
 		
@@ -107,9 +94,9 @@ public class FeedListViewAdapter extends BaseAdapter
 	}
 	
 	@Override
-	public Object getItem(int position)
+	public News getItem(int position)
 	{
-		return null;
+		return this.newsList.get(position);
 	}
 	
 	@Override

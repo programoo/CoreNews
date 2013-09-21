@@ -9,6 +9,7 @@ import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,7 +18,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
@@ -62,7 +67,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		this.newsFragment = inflater.inflate(R.layout.news_fragment, container,
 				false);
 		lv = (ListView) newsFragment.findViewById(R.id.list1Fragment);
-		ardap = new FeedListViewAdapter(getActivity(), Info.newsList);
+		ardap = new FeedListViewAdapter(getActivity(), Info.newsList, aq);
 		lv.setAdapter(ardap);
 		Log.d(TAG, "onCreateView");
 		lv.setOnItemClickListener(this);
@@ -116,7 +121,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		// need 2 index for compare
 		if (tempList.size() >= 5)
 		{
-			String urlTemp1 = tempList.get(tempList.size()/2).link;
+			String urlTemp1 = tempList.get(tempList.size() / 2).link;
 			AjaxCallback<String> cb = new AjaxCallback<String>();
 			cb.url(urlTemp1).type(String.class);
 			aq.sync(cb);
@@ -133,7 +138,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 	public void reloadView()
 	{
 		FeedListViewAdapter ardap = new FeedListViewAdapter(getActivity(),
-				Info.newsList);
+				Info.newsList, aq);
 		lv.setAdapter(ardap);
 		
 		for (int i = 0; i < Info.newsList.size(); i++)
@@ -165,8 +170,8 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 			}
 		}
 		// compare with next item
-		//sampling and middle news list link
-		String urlTemp1 = tempList.get( (tempList.size()/2)+1).link;
+		// sampling and middle news list link
+		String urlTemp1 = tempList.get((tempList.size() / 2) + 1).link;
 		
 		AjaxCallback<String> cb = new AjaxCallback<String>();
 		cb.url(urlTemp1).type(String.class);
@@ -235,6 +240,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		Log.i(TAG, "CALL BACK HTML SIZE: " + html.length());
 		Log.i(TAG, "CALL BACK BY IMAGE: " + imgUrl.length);
 		int indexFilter = 0;
+		boolean isFound = false;
 		for (int i = 0; i < imgUrl.length; i++)
 		{
 			if (imgUrl[i].split("src=\"").length >= 2)
@@ -250,12 +256,44 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 					{
 						Log.i(TAG, "real SETTING THIS IMAGE: " + imgUrlReal);
 						Info.getNewsByLink(url).imgUrl = imgUrlReal;
+						isFound = true;
 					}
 					++indexFilter;
 					
 				}
 			}
 		}
+		
+		// if don't find any image for some url select image that have longest
+		// name to show user
+		// this process below can remove it only use with MATICHON case
+		int maxLongest = 0;
+		
+		if (isFound == false)
+			for (int i = 0; i < imgUrl.length; i++)
+			{
+				
+				if (Info.getNewsByLink(url).imgUrl == null)
+					if (imgUrl[i].split("src=\"").length >= 2)
+					{
+						
+						String imgUrlReal = imgUrl[i].split("src=\"")[1]
+								.split("\"")[0];
+						Log.i(TAG, "image: " + imgUrlReal);
+						if (imgUrlReal.indexOf(".js") == -1
+								&& imgUrlReal.indexOf("http:") != -1)
+						{
+							if (imgUrlReal.length() > maxLongest)
+							{
+								maxLongest = imgUrlReal.length();
+								Info.getNewsByLink(url).imgUrl = imgUrlReal;
+								Log.i(TAG, "real SETTING THIS NULL IMAGE: "
+										+ imgUrlReal);
+							}
+							
+						}
+					}
+			}
 		
 	}
 	
@@ -288,7 +326,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		Log.d(TAG, "reloadViewAfterRequestTaskComplete");
 		
 		FeedListViewAdapter ardap = new FeedListViewAdapter(getActivity(),
-				Info.newsList);
+				Info.newsList, aq);
 		lv.setAdapter(ardap);
 		
 	}
@@ -296,11 +334,36 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 	{
-		Intent it = new Intent(getActivity(), WebViewActivity.class);
-		it.putExtra("url", Info.newsList.get(arg2).urlContent);
-		startActivity(it);
-		getActivity().overridePendingTransition(R.drawable.fadein,
-				R.drawable.fadeout);
+		/*
+		 * Intent it = new Intent(getActivity(), WebViewActivity.class);
+		 * it.putExtra("url", Info.newsList.get(arg2).urlContent);
+		 * it.putExtra("description", Info.newsList.get(arg2).description);
+		 * startActivity(it);
+		 * getActivity().overridePendingTransition(R.drawable.fadein,
+		 * R.drawable.fadeout);
+		 */
+		final Dialog dialog = new Dialog(getActivity());
+		dialog.getWindow();
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.activity_webview);
+		dialog.setCancelable(true);
+		dialog.show();
+		
+		ImageView iv = (ImageView) dialog.findViewById(R.id.imageDialog);
+		News n = (News) this.lv.getItemAtPosition(arg2);
+		aq.id(iv).image(n.imgUrl, true, true, 200, 0);
+		
+		// WEBVIEW settings
+		String html = "" + "<html>" + "<head>" + "<style type='text/css'>"
+				+ "body {" + "font-family:serif;" + "color: #aaaaaa;"
+				+ "background-color: #222222 }" + "</style>" + "</head>"
+				+ "<body>" + Info.newsList.get(arg2).description
+				+ "</body></html>";
+		WebView myWebView = (WebView) dialog.findViewById(R.id.webview);
+		WebSettings webSettings = myWebView.getSettings();
+		webSettings.setDefaultFontSize(12);
+		myWebView.loadDataWithBaseURL("file:///assets/", html, "text/html",
+				"utf-8", null);
 		
 	}
 	
@@ -342,28 +405,25 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		{
 			this.url = uri[0];
 			ArrayList<String> urlList = new ArrayList<String>();
-			//urlList.add(thairath);
-			//urlList.add(dailynews);
+			// urlList.add(thairath);
+			// urlList.add(dailynews);
 			//urlList.add(blognone);
-			urlList.add("http://www.matichon.co.th/rss/news_article.xml");
-			//urlList.add("www.posttoday.com/rss/src/breakingnews.xml");
-
+			// urlList.add("http://www.matichon.co.th/rss/news_article.xml");
+			// urlList.add("www.posttoday.com/rss/src/breakingnews.xml");
 			
-			
-			for(int i=0;i<urlList.size();i++){
+			for (int i = 0; i < urlList.size(); i++)
+			{
 				fetchHomePage(urlList.get(i));
 			}
 			
-			//fetchHomePage(thairath);
-			//fetchHomePage(dailynews);
-			//fetchHomePage(blognone);
-			//fetchHomePage("www.posttoday.com/rss/src/breakingnews.xml");
-			
-			//fetchHomePage("http://www.khaosod.co.th/rss/urgent_news.xml");
-			//fetchHomePage("http://www.matichon.co.th/rss/news_article.xml");
-			//fetchHomePage("http://www.manager.co.th/RSS/Game/Game.xml");
-		
-			//fetchHomePage("http://www.komchadluek.net/rss/news_widget.xml");
+			fetchHomePage(thairath);
+			fetchHomePage(dailynews);
+			fetchHomePage(blognone);
+			fetchHomePage("www.posttoday.com/rss/src/breakingnews.xml");
+			fetchHomePage("http://www.khaosod.co.th/rss/urgent_news.xml");
+			fetchHomePage("http://www.matichon.co.th/rss/news_article.xml");
+			fetchHomePage("http://www.manager.co.th/RSS/Game/Game.xml");
+			fetchHomePage("http://www.komchadluek.net/rss/news_widget.xml");
 			
 			return "ok";
 		}
@@ -406,19 +466,18 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 				
 				AjaxStatus statusContent = cb.getStatus();
 				
-				Log.i(TAG, "Result Size: " + xmlResponseContent.length());
-				fileSize += xmlResponseContent.length();
-				callbackByLink(tempList.get(i).link, xmlResponseContent,
-						statusContent);
+				try{
+					Log.i(TAG, "Result Size: " + xmlResponseContent.length());
+					fileSize += xmlResponseContent.length();
+					callbackByLink(tempList.get(i).link, xmlResponseContent,
+							statusContent);
+				}
+				catch(NullPointerException e){
+					e.printStackTrace();
+				}
+				
 				
 			}
-		}
-		
-		public void contentParser(String html)
-		{
-			String[] a = html.split("<div");
-			// html.
-			
 		}
 		
 	}

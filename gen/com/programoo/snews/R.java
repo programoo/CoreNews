@@ -31,33 +31,35 @@ public final class R {
         public static final int fadeout=0x7f020003;
         public static final int ic_launcher=0x7f020004;
         public static final int is_read=0x7f020005;
-        public static final int news_icon=0x7f020006;
-        public static final int posttoday=0x7f020007;
-        public static final int settings_icon=0x7f020008;
-        public static final int signature_rounded_bg=0x7f020009;
-        public static final int thairath=0x7f02000a;
+        public static final int morning_news=0x7f020006;
+        public static final int news_icon=0x7f020007;
+        public static final int posttoday=0x7f020008;
+        public static final int settings_icon=0x7f020009;
+        public static final int signature_rounded_bg=0x7f02000a;
+        public static final int thairath=0x7f02000b;
     }
     public static final class id {
-        public static final int action_settings=0x7f090013;
+        public static final int action_settings=0x7f090014;
         public static final int activityRoot=0x7f090000;
-        public static final int dailynewsCheckBox=0x7f09000d;
-        public static final int entertainmentCb=0x7f090011;
-        public static final int fromText=0x7f090008;
-        public static final int list1Fragment=0x7f090003;
-        public static final int newsIcon=0x7f090004;
-        public static final int newsText=0x7f090005;
-        public static final int normal_icon=0x7f090009;
-        public static final int normal_title=0x7f09000a;
+        public static final int dailynewsCheckBox=0x7f09000e;
+        public static final int entertainmentCb=0x7f090012;
+        public static final int fromText=0x7f090009;
+        public static final int imageDialog=0x7f090002;
+        public static final int list1Fragment=0x7f090004;
+        public static final int newsIcon=0x7f090005;
+        public static final int newsText=0x7f090006;
+        public static final int normal_icon=0x7f09000a;
+        public static final int normal_title=0x7f09000b;
         public static final int pager=0x7f090001;
-        public static final int politicalCb=0x7f09000f;
-        public static final int providerIcon=0x7f090007;
-        public static final int providerSelectorTextView=0x7f09000b;
-        public static final int signature_layout=0x7f090006;
-        public static final int sportCb=0x7f090010;
-        public static final int technologyCb=0x7f090012;
-        public static final int thairathCheckBox=0x7f09000c;
-        public static final int typeNewsSelectorTextView=0x7f09000e;
-        public static final int webview=0x7f090002;
+        public static final int politicalCb=0x7f090010;
+        public static final int providerIcon=0x7f090008;
+        public static final int providerSelectorTextView=0x7f09000c;
+        public static final int signature_layout=0x7f090007;
+        public static final int sportCb=0x7f090011;
+        public static final int technologyCb=0x7f090013;
+        public static final int thairathCheckBox=0x7f09000d;
+        public static final int typeNewsSelectorTextView=0x7f09000f;
+        public static final int webview=0x7f090003;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -117,20 +119,6 @@ public final class R {
         public static final int typenews_selector_text=0x7f060006;
     }
     public static final class style {
-        /** 
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    
-
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        
-         */
-        public static final int AppBaseTheme=0x7f070000;
-        /**  Application theme. 
- All customizations that are NOT specific to a particular API-level can go here. 
-         */
-        public static final int AppTheme=0x7f070001;
+        public static final int MyTheme=0x7f070000;
     }
 }

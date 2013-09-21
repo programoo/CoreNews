@@ -90,7 +90,7 @@ public class TabsAdapter extends FragmentPagerAdapter implements
 		tv.setText(label);
 		// set font
 		Typeface tf = Typeface.createFromAsset(mContext.getAssets(),
-				"fonts/MicrosoftSansSerif.ttf");
+				"fonts/DroidSerif-Regular.ttf");
 		tv.setTypeface(tf);
 
 		tabSpec.setIndicator(tabIndicator);
