@@ -13,7 +13,6 @@
     <string name="provider_selector_text">เลือกสำนักพิมพ์</string>
     <string name="typenews_selector_text">เลือกประเภทข่าว</string>
     <string name="sport_text">กีฬา</string>
-    <string name="political_text">การเมือง</string>
     <string name="entertainment_text">บันเทิง</string>
     <string name="it_text">เทคโนโลยี</string>
     <string name="economic_text">เศรษฐกิจ</string>

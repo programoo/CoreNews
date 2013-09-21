@@ -2,13 +2,10 @@ package com.programoo.corenews;
 
 import java.util.ArrayList;
 
-import com.programoo.snews.R;
-
 import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -20,6 +17,8 @@ import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
+
+import com.programoo.snews.R;
 
 public class TabsAdapter extends FragmentPagerAdapter implements
 		TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener,
@@ -106,9 +105,9 @@ public class TabsAdapter extends FragmentPagerAdapter implements
 	}
 
 	@Override
-	public Fragment getItem(int position) {
+	public android.support.v4.app.Fragment getItem(int position) {
 		TabInfo info = mTabs.get(position);
-		return Fragment.instantiate(mContext, info.clss.getName(), info.args);
+		return android.support.v4.app.Fragment.instantiate(mContext, info.clss.getName(), info.args);
 	}
 
 	public void onTabChanged(String tabId) {

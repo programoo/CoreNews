@@ -1,15 +1,15 @@
 package com.programoo.corenews;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.programoo.snews.R;
 
-public class SettingFragment extends SherlockFragment {
+public class SettingFragment extends Fragment {
 	private String tag = this.getClass().getSimpleName();
 	private View newsFragment;
 	FeedListViewAdapter ardap;
