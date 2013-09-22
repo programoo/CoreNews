@@ -9,7 +9,7 @@ public class Info {
 	
 	public static void uniqueAdd(News n){
 		for(int i=0;i<Info.newsList.size();i++){
-			if(Info.newsList.get(i).id.equalsIgnoreCase(n.id)) return;
+			if(Info.newsList.get(i).link.equalsIgnoreCase(n.link)) return;
 		}
 		Info.newsList.add(n);
 	}

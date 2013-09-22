@@ -31,43 +31,47 @@ public final class R {
         public static final int fadeout=0x7f020003;
         public static final int ic_launcher=0x7f020004;
         public static final int is_read=0x7f020005;
-        public static final int morning_news=0x7f020006;
-        public static final int news_icon=0x7f020007;
-        public static final int posttoday=0x7f020008;
-        public static final int settings_icon=0x7f020009;
-        public static final int signature_rounded_bg=0x7f02000a;
-        public static final int thairath=0x7f02000b;
+        public static final int listview_rounded_bg=0x7f020006;
+        public static final int morning_news=0x7f020007;
+        public static final int news_icon=0x7f020008;
+        public static final int posttoday=0x7f020009;
+        public static final int reporter_icon=0x7f02000a;
+        public static final int settings_icon=0x7f02000b;
+        public static final int signature_rounded_bg=0x7f02000c;
+        public static final int thairath=0x7f02000d;
     }
     public static final class id {
-        public static final int action_settings=0x7f090014;
+        public static final int action_settings=0x7f090015;
         public static final int activityRoot=0x7f090000;
-        public static final int dailynewsCheckBox=0x7f09000e;
-        public static final int entertainmentCb=0x7f090012;
-        public static final int fromText=0x7f090009;
-        public static final int imageDialog=0x7f090002;
-        public static final int list1Fragment=0x7f090004;
-        public static final int newsIcon=0x7f090005;
-        public static final int newsText=0x7f090006;
-        public static final int normal_icon=0x7f09000a;
-        public static final int normal_title=0x7f09000b;
+        public static final int dailynewsCheckBox=0x7f09000d;
+        public static final int entertainmentCb=0x7f090011;
+        public static final int fromText=0x7f090008;
+        public static final int fullScreenImgDialog=0x7f090002;
+        public static final int imageDialog=0x7f090013;
+        public static final int list1Fragment=0x7f090003;
+        public static final int newsIcon=0x7f090004;
+        public static final int newsText=0x7f090005;
+        public static final int normal_icon=0x7f090009;
+        public static final int normal_title=0x7f09000a;
         public static final int pager=0x7f090001;
-        public static final int politicalCb=0x7f090010;
-        public static final int providerIcon=0x7f090008;
-        public static final int providerSelectorTextView=0x7f09000c;
-        public static final int signature_layout=0x7f090007;
-        public static final int sportCb=0x7f090011;
-        public static final int technologyCb=0x7f090013;
-        public static final int thairathCheckBox=0x7f09000d;
-        public static final int typeNewsSelectorTextView=0x7f09000f;
-        public static final int webview=0x7f090003;
+        public static final int politicalCb=0x7f09000f;
+        public static final int providerIcon=0x7f090007;
+        public static final int providerSelectorTextView=0x7f09000b;
+        public static final int signature_layout=0x7f090006;
+        public static final int sportCb=0x7f090010;
+        public static final int technologyCb=0x7f090012;
+        public static final int thairathCheckBox=0x7f09000c;
+        public static final int typeNewsSelectorTextView=0x7f09000e;
+        public static final int webview=0x7f090014;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
-        public static final int activity_webview=0x7f030001;
+        public static final int fullscreen_img_dialog=0x7f030001;
         public static final int news_fragment=0x7f030002;
         public static final int news_fragment_listview=0x7f030003;
         public static final int normal_tabbar_view=0x7f030004;
         public static final int settings_fragment=0x7f030005;
+        public static final int webview_dialog=0x7f030006;
     }
     public static final class menu {
         public static final int main=0x7f080000;

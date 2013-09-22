@@ -5,4 +5,9 @@
         <item name="android:textColor">#aaaaaa</item>
     </style>
 
+    <!--
+                 <item name="android:background">#222222</item>
+    			        <item name="android:textColor">#aaaaaa</item>
+    -->
+
 </resources>

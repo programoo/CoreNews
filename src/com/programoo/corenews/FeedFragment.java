@@ -6,11 +6,8 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,8 +19,8 @@ import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.androidquery.AQuery;
@@ -40,10 +37,8 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 	private ListView lv;
 	private AQuery aq;
 	private ArrayList<News> tempList;
-	private DateTimeFormatter formatter;
 	private ArrayList<String> imgUrlList1;
 	private int imgLocationIdx;
-	private News newsUnImgFocus;
 	private HashMap<String, Integer> providerImgIdx;
 	
 	String blognone = "http://www.blognone.com/atom.xml";
@@ -55,7 +50,6 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		formatter = DateTimeFormat.forPattern("dd/MM/yy HH:mm:ss");
 		aq = new AQuery(getActivity());
 		imgLocationIdx = 0;
 		providerImgIdx = new HashMap<String, Integer>();
@@ -82,7 +76,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		new SynchronousHtmlFetch().execute("http://www.blognone.com/atom.xml/");
 	}
 	
-	public void picasaCb(String url, XmlDom xml, AjaxStatus status)
+	public void picasaCb(String provider, XmlDom xml, AjaxStatus status)
 	{
 		
 		List<XmlDom> entries;
@@ -106,11 +100,25 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 			String description = entry.text("description");
 			String pubDate = entry.text("pubDate");
 			String dcCreator = entry.text("dc:creator");
+			Log.i(TAG, "Public date:" + pubDate);
 			
-			News n = new News(url, titleStr, link, description, pubDate,
+			News n = new News(provider, link, titleStr, description, pubDate,
 					dcCreator);
 			n.imgUrl = descriptionParser(description);
-			n.urlContent = link;
+			
+			// time parser with my self
+			int year = Integer.parseInt(pubDate.split(" ")[3]);
+			int month = monthTranslate(pubDate.split(" ")[2]);
+			int day = Integer.parseInt(pubDate.split(" ")[1]);
+			int hour = Integer.parseInt(pubDate.split(" ")[4].split(":")[0]);
+			int min = Integer.parseInt(pubDate.split(" ")[4].split(":")[1]);
+			int sec = Integer.parseInt(pubDate.split(" ")[4].split(":")[2]);
+			
+			DateTime dt = new DateTime(year, month, day, hour, min, sec, 0);
+			
+			n.pubDate = getHumanLanguageTime(dt);
+			n.unixTime = dt.getMillis();
+			
 			tempList.add(n);
 			Info.uniqueAdd(n);
 			titles.add(titleStr);
@@ -135,8 +143,53 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		// reload view
 	}
 	
+	public int monthTranslate(String monthString)
+	{
+		// Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
+		if (monthString.equalsIgnoreCase("jan"))
+		{
+			return 1;
+		} else if (monthString.equalsIgnoreCase("Feb"))
+		{
+			return 2;
+		} else if (monthString.equalsIgnoreCase("Mar"))
+		{
+			return 3;
+		} else if (monthString.equalsIgnoreCase("Apr"))
+		{
+			return 4;
+		} else if (monthString.equalsIgnoreCase("May"))
+		{
+			return 5;
+		} else if (monthString.equalsIgnoreCase("Jun"))
+		{
+			return 6;
+		} else if (monthString.equalsIgnoreCase("Jul"))
+		{
+			return 7;
+		} else if (monthString.equalsIgnoreCase("Aug"))
+		{
+			return 8;
+		} else if (monthString.equalsIgnoreCase("Sep"))
+		{
+			return 9;
+		} else if (monthString.equalsIgnoreCase("Oct"))
+		{
+			return 10;
+		} else if (monthString.equalsIgnoreCase("Nov"))
+		{
+			return 11;
+		} else if (monthString.equalsIgnoreCase("Dec"))
+		{
+			return 12;
+		}
+		
+		return new DateTime().getMonthOfYear();
+	}
+	
 	public void reloadView()
 	{
+		Info.sortNewsList();
 		FeedListViewAdapter ardap = new FeedListViewAdapter(getActivity(),
 				Info.newsList, aq);
 		lv.setAdapter(ardap);
@@ -334,18 +387,10 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
 	{
-		/*
-		 * Intent it = new Intent(getActivity(), WebViewActivity.class);
-		 * it.putExtra("url", Info.newsList.get(arg2).urlContent);
-		 * it.putExtra("description", Info.newsList.get(arg2).description);
-		 * startActivity(it);
-		 * getActivity().overridePendingTransition(R.drawable.fadein,
-		 * R.drawable.fadeout);
-		 */
 		final Dialog dialog = new Dialog(getActivity());
 		dialog.getWindow();
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		dialog.setContentView(R.layout.activity_webview);
+		dialog.setContentView(R.layout.webview_dialog);
 		dialog.setCancelable(true);
 		dialog.show();
 		
@@ -405,9 +450,10 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		{
 			this.url = uri[0];
 			ArrayList<String> urlList = new ArrayList<String>();
-			// urlList.add(thairath);
-			// urlList.add(dailynews);
-			//urlList.add(blognone);
+			//urlList.add(thairath);
+			//urlList.add(dailynews);
+			//urlList.add("http://www.thaimacupdate.com/feed/");
+			// urlList.add(blognone);
 			// urlList.add("http://www.matichon.co.th/rss/news_article.xml");
 			// urlList.add("www.posttoday.com/rss/src/breakingnews.xml");
 			
@@ -415,15 +461,24 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 			{
 				fetchHomePage(urlList.get(i));
 			}
-			
-			fetchHomePage(thairath);
-			fetchHomePage(dailynews);
+			/*
+			 * fetchHomePage(thairath); publishProgress();
+			 * fetchHomePage(dailynews); publishProgress();
+			 */
 			fetchHomePage(blognone);
-			fetchHomePage("www.posttoday.com/rss/src/breakingnews.xml");
-			fetchHomePage("http://www.khaosod.co.th/rss/urgent_news.xml");
-			fetchHomePage("http://www.matichon.co.th/rss/news_article.xml");
-			fetchHomePage("http://www.manager.co.th/RSS/Game/Game.xml");
-			fetchHomePage("http://www.komchadluek.net/rss/news_widget.xml");
+			publishProgress();
+			/*
+			 * fetchHomePage("www.posttoday.com/rss/src/breakingnews.xml");
+			 * publishProgress();
+			 * fetchHomePage("http://www.khaosod.co.th/rss/urgent_news.xml");
+			 * publishProgress();
+			 * fetchHomePage("http://www.matichon.co.th/rss/news_article.xml");
+			 * publishProgress();
+			 * fetchHomePage("http://www.manager.co.th/RSS/Game/Game.xml");
+			 * publishProgress();
+			 * fetchHomePage("http://www.komchadluek.net/rss/news_widget.xml");
+			 * publishProgress();
+			 */
 			
 			return "ok";
 		}
@@ -466,16 +521,16 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 				
 				AjaxStatus statusContent = cb.getStatus();
 				
-				try{
+				try
+				{
 					Log.i(TAG, "Result Size: " + xmlResponseContent.length());
 					fileSize += xmlResponseContent.length();
 					callbackByLink(tempList.get(i).link, xmlResponseContent,
 							statusContent);
-				}
-				catch(NullPointerException e){
+				} catch (NullPointerException e)
+				{
 					e.printStackTrace();
 				}
-				
 				
 			}
 		}

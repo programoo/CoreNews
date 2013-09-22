@@ -1,42 +1,26 @@
 package com.programoo.corenews;
 
-
-public class News {
+public class News
+{
 	String provider;
-	String id;
-	String pubDate;
-	String urlContent;
-	String description;
-	
-	//String title;
 	String link;
-	//String description;
-
+	String title;
+	String description;
+	String pubDate;
+	String creator;
 	// update later
 	String imgUrl = "undefined";
-	String title = "undefined";
 	long unixTime = 0;
-	long stampTime = 0;
-
-	public News(String provider,String title,String link,String description,String time,String reporter){
+	
+	public News(String provider, String link, String title, String description,
+			String pubDate, String creator)
+	{
 		this.provider = provider;
-		this.title = title;
 		this.link = link;
-		this.id = link;//re-create later
+		this.title = title;
 		this.description = description;
-	}
-	
-	public News(String provider, String id, String pubDate, String urlContent,
-			String description) {
-		this.provider = provider;
-		this.id = id;
 		this.pubDate = pubDate;
-		this.urlContent = urlContent;
-		this.description = description;
+		this.creator = creator;
 	}
 	
-	@Override
-	public String toString() {
-		return id + "," + pubDate + "," + description;
-	}
 }

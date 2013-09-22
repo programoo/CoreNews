@@ -24,7 +24,7 @@ public class WebViewActivity extends Activity
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
-		setContentView(R.layout.activity_webview);
+		setContentView(R.layout.webview_dialog);
 		// String url = getIntent().getStringExtra("url");
 		String description = getIntent().getStringExtra("description");
 		
