@@ -11,6 +11,7 @@
         android:layout_width="80dp"
         android:layout_height="48dp"
         android:background="@color/red"
+        android:scaleType="fitXY"
         android:contentDescription="@string/hello_world"
         android:src="@drawable/ic_launcher" />
 

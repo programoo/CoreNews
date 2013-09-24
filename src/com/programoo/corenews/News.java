@@ -23,4 +23,10 @@ public class News
 		this.creator = creator;
 	}
 	
+	public News clone(){
+		News n = new News(this.provider,this.link,this.title,this.description,this.pubDate,this.creator);
+		n.imgUrl = this.imgUrl;
+		n.unixTime = this.unixTime;
+		return n;
+	}
 }

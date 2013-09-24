@@ -1,22 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activityRoot"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <ImageView
+    <ImageButton
         android:id="@+id/imageDialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/hello_world"
         android:layout_centerHorizontal="true">
        
-    </ImageView>
+    </ImageButton>
+    
+    <Button
+        android:id="@+id/shareImgBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageDialog"
+        android:text="@string/share_text"
+        android:src="@drawable/share_img"
+        android:contentDescription="@string/share_text"
+        android:layout_centerHorizontal="true">
+    </Button>
     
     <WebView
         android:id="@+id/webview"
-        android:layout_below="@+id/imageDialog"
+        android:layout_below="@+id/shareImgBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

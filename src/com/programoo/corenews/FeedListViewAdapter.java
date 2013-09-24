@@ -66,26 +66,10 @@ public class FeedListViewAdapter extends BaseAdapter implements OnClickListener
 		ImageView providerIcon = (ImageView) convertView
 				.findViewById(R.id.providerIcon);
 		providerIcon.setImageResource(R.drawable.reporter_icon);
-		/*
-		if (this.newsList.get(position).provider.indexOf("thairath") != -1)
-		{
-			providerIcon.setImageResource(R.drawable.thairath);
-		} else if (this.newsList.get(position).provider.indexOf("dailynews") != -1)
-		{
-			providerIcon.setImageResource(R.drawable.daily);
-		} else if (this.newsList.get(position).provider.indexOf("blognone") != -1)
-		{
-			providerIcon.setImageResource(R.drawable.blognone);
-		} else if (this.newsList.get(position).provider.indexOf("posttoday") != -1)
-		{
-			providerIcon.setImageResource(R.drawable.posttoday);
-		}
-		*/
 		TextView description = (TextView) convertView
 				.findViewById(R.id.newsText);
 		description.setText(this.newsList.get(position).title);
 		description.setTypeface(tf);
-
 		
 		TextView reporterText = (TextView) convertView
 				.findViewById(R.id.fromText);
@@ -128,7 +112,8 @@ public class FeedListViewAdapter extends BaseAdapter implements OnClickListener
 		dialog.show();
 		
 		ImageView iv = (ImageView) dialog.findViewById(R.id.fullScreenImgDialog);
-		aq.id(iv).image(this.newsList.get(position).imgUrl, true, true, 200, 0);
+		aq.id(iv).image(this.newsList.get(position).imgUrl, true, true);
+		//aq.id(iv).image(this.newsList.get(position).imgUrl, true, true, 0, 0);
 		
 	}
 	
