@@ -96,16 +96,18 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 			Toast.makeText(getActivity(), providerName + " connected",
 					Toast.LENGTH_LONG).show();
 			
-			final Dialog postDialog = new Dialog(getActivity());
+			final Dialog postDialog = new Dialog(getActivity(),R.style.MyTheme);
 			postDialog.getWindow();
 			postDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 			postDialog.setContentView(R.layout.insert_comment);
 			postDialog.setCancelable(true);
 			postDialog.show();
 			
-			Button postBtn = (Button) postDialog.findViewById(R.id.postCommentBtn);
+			Button postBtn = (Button) postDialog
+					.findViewById(R.id.postCommentBtn);
 			
-			final EditText postEdt = (EditText) postDialog.findViewById(R.id.postCommentEdt);
+			final EditText postEdt = (EditText) postDialog
+					.findViewById(R.id.postCommentEdt);
 			
 			postBtn.setOnClickListener(new OnClickListener()
 			{
@@ -115,13 +117,9 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 				{
 					postDialog.dismiss();
 					new uploadImgBgTask().execute(postEdt.getText().toString());
-
+					
 				}
 			});
-			
-			
-			
-			
 			
 		}
 		
@@ -150,8 +148,11 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		
 		@Override
 		protected String doInBackground(String... params)
-		{	String userComment = params[0];
-			String message = userComment+"\n\n"+currentShowOnDialogNew.description
+		{
+			String userComment = params[0];
+			String message = userComment
+					+ "\n\n"
+					+ currentShowOnDialogNew.description
 					+ "\n"
 					+ getString(R.string.from_text)
 					+ ": "
@@ -698,17 +699,8 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 			super.onPostExecute(result);
 			Log.i(TAG, "Final fetching: " + result + "," + fileSize);
 			// prevent some bug when try to update
-			getActivity().runOnUiThread(new Runnable()
-			{
-				
-				@Override
-				public void run()
-				{
-					// your stuff to update the UI
-					reloadView();
-					
-				}
-			});
+			reloadView();
+			
 		}
 		
 		public void fetchContentSynchronous()
