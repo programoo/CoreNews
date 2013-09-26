@@ -8,7 +8,7 @@ import android.util.Log;
 
 public class Info {
 	public static ArrayList<News> newsList = new ArrayList<News>();;
-	
+	public static int SPEAK_AVAILABLE = 555;
 	public static void uniqueAdd(News n){
 		for(int i=0;i<Info.newsList.size();i++){
 			if(Info.newsList.get(i).link.equalsIgnoreCase(n.link)) return;

@@ -3,6 +3,7 @@ package com.programoo.corenews;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.brickred.socialauth.android.DialogListener;
@@ -12,12 +13,14 @@ import org.brickred.socialauth.android.SocialAuthError;
 import org.brickred.socialauth.android.SocialAuthListener;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
-import org.jsoup.Jsoup;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.OnInitListener;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager.LayoutParams;
 import android.util.Log;
@@ -43,7 +46,8 @@ import com.androidquery.callback.AjaxStatus;
 import com.androidquery.util.XmlDom;
 import com.programoo.snews.R;
 
-public class FeedFragment extends Fragment implements OnItemClickListener
+public class FeedFragment extends Fragment implements OnItemClickListener,
+		OnInitListener
 {
 	private String TAG = this.getClass().getSimpleName();
 	private View newsFragment;
@@ -59,6 +63,8 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 	String thairath = "http://www.thairath.co.th/rss/news.xml";
 	String dailynews = "http://www.dailynews.co.th/rss.xml";
 	int fileSize = 0;
+	private TextToSpeech mTts;
+	
 	private News currentShowOnDialogNew;
 	
 	private SocialAuthAdapter adapter;
@@ -80,21 +86,23 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 				"http://socialauth.in/socialauthdemo/socialAuthSuccessAction.do");
 	}
 	
+	
+	
 	private final class ResponseListener implements DialogListener
 	{
 		@Override
 		public void onComplete(Bundle values)
 		{
 			
-			Log.d("ShareButton", "Authentication Successful");
+			//d("ShareButton", "Authentication Successful");
 			// Get name of provider after authentication
 			final String providerName = values
 					.getString(SocialAuthAdapter.PROVIDER);
-			Log.d("ShareButton", "Provider Name = " + providerName);
+			//d("ShareButton", "Provider Name = " + providerName);
 			Toast.makeText(getActivity(), providerName + " connected",
 					Toast.LENGTH_LONG).show();
 			
-			final Dialog postDialog = new Dialog(getActivity(), R.style.MyTheme);
+			final Dialog postDialog = new Dialog(getActivity());
 			postDialog.getWindow();
 			postDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 			postDialog.setContentView(R.layout.insert_comment);
@@ -124,26 +132,26 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		@Override
 		public void onError(SocialAuthError error)
 		{
-			Log.d("ShareButton", "Authentication Error: " + error.getMessage());
+			//d("ShareButton", "Authentication Error: " + error.getMessage());
 		}
 		
 		@Override
 		public void onCancel()
 		{
-			Log.d("ShareButton", "Authentication Cancelled");
+			//d("ShareButton", "Authentication Cancelled");
 		}
 		
 		@Override
 		public void onBack()
 		{
-			Log.d("Share-Button", "Dialog Closed by pressing Back Key");
+			//d("Share-Button", "Dialog Closed by pressing Back Key");
 		}
 		
 	}
 	
 	private class uploadImgBgTask extends AsyncTask<String, String, String>
 	{
-
+		
 		@Override
 		protected String doInBackground(String... params)
 		{
@@ -154,7 +162,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 					+ "\n"
 					+ Info.html2text(currentShowOnDialogNew.description)
 					+ "\n"
-					+ getString(R.string.from_text)
+					+ getString(R.string.continue_read_text)
 					+ ": "
 					+ currentShowOnDialogNew.link
 					+ "\n"
@@ -162,7 +170,6 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 					+ ": https://play.google.com/store/apps/details?id=com.prakarn.loopwalker";
 			try
 			{
-				// parser with JSOAP before posted message on facebook
 				Bitmap preset = aq
 						.getCachedImage(currentShowOnDialogNew.imgUrl);
 				adapter.uploadImage(message, currentShowOnDialogNew.imgUrl,
@@ -181,7 +188,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		protected void onPostExecute(String result)
 		{
 			super.onPostExecute(result);
-			Log.d(TAG, "image posted complete");
+			//d(TAG, "image posted complete");
 			Toast.makeText(getActivity(), "Message posted complete ",
 					Toast.LENGTH_LONG).show();
 		}
@@ -220,7 +227,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		lv = (ListView) newsFragment.findViewById(R.id.list1Fragment);
 		ardap = new FeedListViewAdapter(getActivity(), Info.newsList, aq);
 		lv.setAdapter(ardap);
-		Log.d(TAG, "onCreateView");
+		//d(TAG, "onCreateView");
 		lv.setOnItemClickListener(this);
 		return newsFragment;
 	}
@@ -275,7 +282,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 			String description = entry.text("description");
 			String pubDate = entry.text("pubDate");
 			String dcCreator = entry.text("dc:creator");
-			Log.i(TAG, "Public date:" + pubDate);
+			//i(TAG, "Public date:" + pubDate);
 			
 			// for unicode link
 			link = StringEscapeUtils.unescapeJava(link);
@@ -312,7 +319,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 			AjaxCallback<String> cb = new AjaxCallback<String>();
 			cb.url(urlTemp1).type(String.class);
 			aq.sync(cb);
-			Log.i(TAG, "fetching TEMPLATE1: " + urlTemp1);
+			//i(TAG, "fetching TEMPLATE1: " + urlTemp1);
 			String xmlResponseContent = cb.getResult();
 			AjaxStatus statusContent = cb.getStatus();
 			diffImageUrlFirst(urlTemp1, xmlResponseContent, statusContent);
@@ -381,8 +388,8 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		
 		for (int i = 0; i < Info.newsList.size(); i++)
 		{
-			Log.i(TAG, "url: " + Info.newsList.get(i).link + ",,,,,,,,"
-					+ "img: " + Info.newsList.get(i).imgUrl);
+			//i(TAG, "url: " + Info.newsList.get(i).link + ",,,,,,,,"
+			//		+ "img: " + Info.newsList.get(i).imgUrl);
 		}
 	}
 	
@@ -392,7 +399,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		{
 			imgUrlList1 = new ArrayList<String>();
 			String imgUrl1[] = html.split("<img");
-			Log.i(TAG, "template image1: " + imgUrl1.length);
+			//i(TAG, "template image1: " + imgUrl1.length);
 			
 			for (int i = 0; i < imgUrl1.length; i++)
 			{
@@ -405,7 +412,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 					if (imgUrlReal.indexOf(".js") == -1
 							&& imgUrlReal.indexOf("http:") != -1)
 					{
-						Log.i(TAG, "template image1" + imgUrlReal);
+						//i(TAG, "template image1" + imgUrlReal);
 						imgUrlList1.add(imgUrlReal);
 					}
 				}
@@ -417,7 +424,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 			AjaxCallback<String> cb = new AjaxCallback<String>();
 			cb.url(urlTemp1).type(String.class);
 			aq.sync(cb);
-			Log.i(TAG, "fetching TEMPLATE2: " + urlTemp1);
+			//i(TAG, "fetching TEMPLATE2: " + urlTemp1);
 			String xmlResponseContent = cb.getResult();
 			AjaxStatus statusContent = cb.getStatus();
 			diffImageUrlSecond(urlTemp1, xmlResponseContent, statusContent);
@@ -433,7 +440,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		ArrayList<String> imgUrlList2 = new ArrayList<String>();
 		
 		String imgUrl[] = html.split("<img");
-		Log.i(TAG, "template image2" + imgUrl.length);
+		//i(TAG, "template image2" + imgUrl.length);
 		
 		for (int i = 0; i < imgUrl.length; i++)
 		{
@@ -444,7 +451,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 				if (imgUrlReal.indexOf(".js") == -1
 						&& imgUrlReal.indexOf("http:") != -1)
 				{
-					Log.i(TAG, "template image2" + imgUrlReal);
+					//i(TAG, "template image2" + imgUrlReal);
 					imgUrlList2.add(imgUrlReal);
 				}
 			}
@@ -453,11 +460,11 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		{
 			if (i < imgUrlList2.size())
 			{
-				Log.i(TAG, "COMPARE: " + imgUrlList1.get(i)
-						+ ",,,,,,,,,,,,,,,,,,," + imgUrlList2.get(i));
-				Log.i(TAG,
-						"RESULT: "
-								+ imgUrlList1.get(i).equals(imgUrlList2.get(i)));
+				//i(TAG, "COMPARE: " + imgUrlList1.get(i)
+				//		+ ",,,,,,,,,,,,,,,,,,," + imgUrlList2.get(i));
+				//i(TAG,
+				//		"RESULT: "
+				//				+ imgUrlList1.get(i).equals(imgUrlList2.get(i)));
 				// FOUND !!
 				if (!imgUrlList1.get(i).equals(imgUrlList2.get(i)))
 				{
@@ -465,8 +472,8 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 					providerImgIdx.put(Info.getNewsByLink(url).provider, i);
 					imgLocationIdx = i;
 					// imageId = i;
-					Log.i(TAG, "FOUND!! start parsing image id: "
-							+ imgLocationIdx);
+					//i(TAG, "FOUND!! start parsing image id: "
+					//		+ imgLocationIdx);
 					break;
 				}
 				
@@ -482,8 +489,8 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 	{
 		// parser for that URL
 		String imgUrl[] = html.split("<img");
-		Log.i(TAG, "CALL BACK HTML SIZE: " + html.length());
-		Log.i(TAG, "CALL BACK BY IMAGE: " + imgUrl.length);
+		//i(TAG, "CALL BACK HTML SIZE: " + html.length());
+		//i(TAG, "CALL BACK BY IMAGE: " + imgUrl.length);
 		int indexFilter = 0;
 		boolean isFound = false;
 		for (int i = 0; i < imgUrl.length; i++)
@@ -492,14 +499,14 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 			{
 				
 				String imgUrlReal = imgUrl[i].split("src=\"")[1].split("\"")[0];
-				Log.i(TAG, "image: " + imgUrlReal);
+				//i(TAG, "image: " + imgUrlReal);
 				if (imgUrlReal.indexOf(".js") == -1
 						&& imgUrlReal.indexOf("http:") != -1)
 				{
 					
 					if (indexFilter == imgLocationIdx)
 					{
-						Log.i(TAG, "real SETTING THIS IMAGE: " + imgUrlReal);
+						//i(TAG, "real SETTING THIS IMAGE: " + imgUrlReal);
 						Info.getNewsByLink(url).imgUrl = imgUrlReal;
 						isFound = true;
 					}
@@ -524,7 +531,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 						
 						String imgUrlReal = imgUrl[i].split("src=\"")[1]
 								.split("\"")[0];
-						Log.i(TAG, "image: " + imgUrlReal);
+						//i(TAG, "image: " + imgUrlReal);
 						if (imgUrlReal.indexOf(".js") == -1
 								&& imgUrlReal.indexOf("http:") != -1)
 						{
@@ -532,8 +539,8 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 							{
 								maxLongest = imgUrlReal.length();
 								Info.getNewsByLink(url).imgUrl = imgUrlReal;
-								Log.i(TAG, "real SETTING THIS NULL IMAGE: "
-										+ imgUrlReal);
+								//i(TAG, "real SETTING THIS NULL IMAGE: "
+										//+ imgUrlReal);
 							}
 							
 						}
@@ -557,7 +564,10 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 	public void onStart()
 	{
 		super.onStart();
-		
+		// init speaker
+		Intent checkIntent = new Intent();
+		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+		startActivityForResult(checkIntent, Info.SPEAK_AVAILABLE);
 	}
 	
 	@Override
@@ -585,7 +595,8 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		// Enable Provider
 		adapter.enable(shareBtn);
 		
-		ImageButton closeImgBtn = (ImageButton) dialog.findViewById(R.id.closeImgBtnDialog);
+		ImageButton closeImgBtn = (ImageButton) dialog
+				.findViewById(R.id.closeImgBtnDialog);
 		closeImgBtn.setOnClickListener(new OnClickListener()
 		{
 			
@@ -645,6 +656,51 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		myWebView.loadDataWithBaseURL("file:///assets/", html, "text/html",
 				"utf-8", null);
 		
+		textToSpeech(Info.html2text(currentShowOnDialogNew.title + " "
+				+ currentShowOnDialogNew.description));
+		
+	}
+	
+	public void textToSpeech(String text)
+	{
+		// mTts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+		try
+		{
+			String myText1 = "Did you sleep well?";
+			String myText2 = "I hope so, because it's time to wake up.";
+			mTts.speak(myText1, TextToSpeech.QUEUE_FLUSH, null);
+			mTts.speak(myText2, TextToSpeech.QUEUE_ADD, null);
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+		Log.i(TAG,"request code: "+requestCode+","+resultCode);
+		if (requestCode == Info.SPEAK_AVAILABLE)
+		{
+			if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS)
+			{
+				// success, create the TTS instance
+				mTts = new TextToSpeech(getActivity(), this);
+				mTts.setLanguage(Locale.getDefault());
+				Log.i(TAG,"Create SOUND COMPLETE");
+			} else
+			{
+				// missing data, install it
+				Log.i(TAG,"Create INSTALL IT");
+
+				Intent installIntent = new Intent();
+				installIntent
+						.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+				startActivity(installIntent);
+			}
+		}
+		
 	}
 	
 	public String getHumanLanguageTime(DateTime newsTime)
@@ -692,7 +748,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 			this.url = uri[0];
 			AjaxCallback<XmlDom> cb1 = new AjaxCallback<XmlDom>();
 			cb1.url(this.url).type(XmlDom.class);
-			Log.i(TAG, "Starting fetching");
+			//i(TAG, "Starting fetching");
 			aq.sync(cb1);
 			XmlDom xmlResponse1 = cb1.getResult();
 			AjaxStatus status1 = cb1.getStatus();
@@ -716,7 +772,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		protected void onPostExecute(String result)
 		{
 			super.onPostExecute(result);
-			Log.i(TAG, "Final fetching: " + result + "," + fileSize);
+			//i(TAG, "Final fetching: " + result + "," + fileSize);
 			// prevent some bug when try to update
 			reloadView();
 			
@@ -730,9 +786,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 				AjaxCallback<String> cb = new AjaxCallback<String>();
 				cb.url(tempList.get(i).link).type(String.class);
 				aq.sync(cb);
-				
-				Log.i(TAG, "fetching content: " + tempList.get(i).link);
-				
+				//i(TAG, "fetching content: " + tempList.get(i).link);
 				String xmlResponseContent = cb.getResult();
 				
 				AjaxStatus statusContent = cb.getStatus();
@@ -740,7 +794,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 				try
 				{
 					// parse for get image url
-					Log.i(TAG, "Result Size: " + xmlResponseContent.length());
+					//i(TAG, "Result Size: " + xmlResponseContent.length());
 					fileSize += xmlResponseContent.length();
 					callbackByLink(tempList.get(i).link, xmlResponseContent,
 							statusContent);
@@ -760,6 +814,9 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		
 	}
 	
-	
+	@Override
+	public void onInit(int status)
+	{
+	}
 	
 }
