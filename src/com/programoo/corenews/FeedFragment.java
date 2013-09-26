@@ -12,6 +12,7 @@ import org.brickred.socialauth.android.SocialAuthError;
 import org.brickred.socialauth.android.SocialAuthListener;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
+import org.jsoup.Jsoup;
 
 import android.app.Dialog;
 import android.graphics.Bitmap;
@@ -69,8 +70,6 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		aq = new AQuery(getActivity());
 		imgLocationIdx = 0;
 		providerImgIdx = new HashMap<String, Integer>();
-		
-		// adapter.up
 		// share button settings
 		adapter = new SocialAuthAdapter(new ResponseListener());
 		// Add providers
@@ -88,7 +87,6 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		{
 			
 			Log.d("ShareButton", "Authentication Successful");
-			
 			// Get name of provider after authentication
 			final String providerName = values
 					.getString(SocialAuthAdapter.PROVIDER);
@@ -96,7 +94,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 			Toast.makeText(getActivity(), providerName + " connected",
 					Toast.LENGTH_LONG).show();
 			
-			final Dialog postDialog = new Dialog(getActivity(),R.style.MyTheme);
+			final Dialog postDialog = new Dialog(getActivity(), R.style.MyTheme);
 			postDialog.getWindow();
 			postDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 			postDialog.setContentView(R.layout.insert_comment);
@@ -145,14 +143,16 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 	
 	private class uploadImgBgTask extends AsyncTask<String, String, String>
 	{
-		
+
 		@Override
 		protected String doInBackground(String... params)
 		{
 			String userComment = params[0];
 			String message = userComment
 					+ "\n\n"
-					+ currentShowOnDialogNew.description
+					+ currentShowOnDialogNew.title
+					+ "\n"
+					+ Info.html2text(currentShowOnDialogNew.description)
 					+ "\n"
 					+ getString(R.string.from_text)
 					+ ": "
@@ -231,11 +231,11 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		super.onViewCreated(view, savedInstanceState);
 		
 		ArrayList<String> urlList = new ArrayList<String>();
-		// urlList.add(dailynews);
-		// urlList.add("http://www.thaimacupdate.com/feed/");
+		urlList.add(dailynews);
+		urlList.add("http://www.thaimacupdate.com/feed/");
 		urlList.add(blognone);
-		// urlList.add("http://www.matichon.co.th/rss/news_article.xml");
-		// urlList.add("www.posttoday.com/rss/src/blogs.xml");
+		urlList.add("http://www.matichon.co.th/rss/news_article.xml");
+		urlList.add("www.posttoday.com/rss/src/blogs.xml");
 		urlList.add(thairath);
 		
 		for (int i = 0; i < urlList.size(); i++)
@@ -584,6 +584,18 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		Button shareBtn = (Button) dialog.findViewById(R.id.shareImgBtn);
 		// Enable Provider
 		adapter.enable(shareBtn);
+		
+		ImageButton closeImgBtn = (ImageButton) dialog.findViewById(R.id.closeImgBtnDialog);
+		closeImgBtn.setOnClickListener(new OnClickListener()
+		{
+			
+			@Override
+			public void onClick(View v)
+			{
+				dialog.dismiss();
+			}
+		});
+		
 		// adapter.e
 		iv.setOnClickListener(new OnClickListener()
 		{
@@ -618,11 +630,15 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		currentShowOnDialogNew = n;// for share later
 		// bm = BitmapFactory.decodeResource(getResources(), R.drawable.image);
 		// WEBVIEW settings
-		String html = "" + "<html>" + "<head>" + "<style type='text/css'>"
-				+ "body {" + "font-family:serif;" + "color: #aaaaaa;"
+		String html = "" + "<html>" + "<head>"
+				+ "<style type='text/css'>a:link {color:#ff8c00;}" + "body {"
+				+ "font-family:serif;" + "color: #aaaaaa;"
 				+ "background-color: #222222 }" + "</style>" + "</head>"
-				+ "<body>" + Info.newsList.get(arg2).description
-				+ "</body></html>";
+				+ "<body><h3>" + Info.newsList.get(arg2).title + "</h3>\n"
+				+ Info.newsList.get(arg2).description + "\n" + "<a href=\""
+				+ Info.newsList.get(arg2).link + "\">"
+				+ getString(R.string.continue_read_text) + "</body></html>";
+		
 		WebView myWebView = (WebView) dialog.findViewById(R.id.webview);
 		WebSettings webSettings = myWebView.getSettings();
 		webSettings.setDefaultFontSize(12);
@@ -635,26 +651,31 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 	{
 		String alreadyPassTime = "undefined";
 		// joda time convert
-		DateTime currentTime = new DateTime();
-		Duration dur = new Duration(newsTime, currentTime);
-		
-		if (dur.getStandardDays() > 0)
+		try
 		{
-			alreadyPassTime = dur.getStandardDays() + " "
-					+ getString(R.string.pass_day_text);
-		} else if (dur.getStandardHours() > 0)
+			DateTime currentTime = new DateTime();
+			Duration dur = new Duration(newsTime, currentTime);
+			
+			if (dur.getStandardDays() > 0)
+			{
+				alreadyPassTime = dur.getStandardDays() + " "
+						+ getString(R.string.pass_day_text);
+			} else if (dur.getStandardHours() > 0)
+			{
+				alreadyPassTime = dur.getStandardHours() + " "
+						+ getString(R.string.pass_hour_text);
+			} else if (dur.getStandardMinutes() > 0)
+			{
+				alreadyPassTime = dur.getStandardMinutes() + " "
+						+ getString(R.string.pass_minute_text);
+			} else
+			{
+				alreadyPassTime = getString(R.string.pass_second_text);
+			}
+		} catch (Exception e)
 		{
-			alreadyPassTime = dur.getStandardHours() + " "
-					+ getString(R.string.pass_hour_text);
-		} else if (dur.getStandardMinutes() > 0)
-		{
-			alreadyPassTime = dur.getStandardMinutes() + " "
-					+ getString(R.string.pass_minute_text);
-		} else
-		{
-			alreadyPassTime = getString(R.string.pass_second_text);
+			e.printStackTrace();
 		}
-		
 		return alreadyPassTime;
 	}
 	
@@ -667,29 +688,27 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		@Override
 		protected String doInBackground(String... uri)
 		{
-			this.url = uri[0];
 			
+			this.url = uri[0];
 			AjaxCallback<XmlDom> cb1 = new AjaxCallback<XmlDom>();
 			cb1.url(this.url).type(XmlDom.class);
 			Log.i(TAG, "Starting fetching");
 			aq.sync(cb1);
 			XmlDom xmlResponse1 = cb1.getResult();
 			AjaxStatus status1 = cb1.getStatus();
-			picasaCb(this.url, xmlResponse1, status1);
 			
+			picasaCb(this.url, xmlResponse1, status1);
 			getActivity().runOnUiThread(new Runnable()
 			{
-				
 				@Override
 				public void run()
 				{
 					reloadView();
-					
 				}
 			});
-			
 			this.fetchContentSynchronous();
 			
+			// JSoupTest();
 			return "ok";
 		}
 		
@@ -720,10 +739,17 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 				
 				try
 				{
+					// parse for get image url
 					Log.i(TAG, "Result Size: " + xmlResponseContent.length());
 					fileSize += xmlResponseContent.length();
 					callbackByLink(tempList.get(i).link, xmlResponseContent,
 							statusContent);
+					// parse only body with JSoup
+					String kak = "";
+					// kak.repl
+					// Document doc = Jsoup.parse(xmlResponseContent);
+					// String text = doc.body().text(); // "An example link"
+					// tempList.get(i).description = text;
 				} catch (NullPointerException e)
 				{
 					e.printStackTrace();
@@ -733,5 +759,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener
 		}
 		
 	}
+	
+	
 	
 }

@@ -2,6 +2,8 @@ package com.programoo.corenews;
 
 import java.util.ArrayList;
 
+import org.jsoup.Jsoup;
+
 import android.util.Log;
 
 public class Info {
@@ -42,5 +44,9 @@ public class Info {
 				}
 			}
 		}
+	}
+	
+	public static String html2text(String html) {
+	    return Jsoup.parse(html).text();
 	}
 }

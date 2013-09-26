@@ -3,32 +3,56 @@
     android:id="@+id/activityRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="0dp" >
+
+    <ImageButton
+        android:id="@+id/closeImgBtnDialog"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@null"
+        android:contentDescription="@string/hello_world"
+        android:padding="0dp"
+        android:paddingBottom="0dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingTop="0dp"
+        android:scaleType="fitStart"
+        android:src="@drawable/close_img" >
+
+    </ImageButton>
 
     <ImageButton
         android:id="@+id/imageDialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@null"
         android:contentDescription="@string/hello_world"
-        android:layout_centerHorizontal="true">
-       
+        android:paddingTop="10dp"
+        android:scaleType="fitStart" >
+
     </ImageButton>
-    
+
     <Button
         android:id="@+id/shareImgBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageDialog"
-        android:text="@string/share_text"
-        android:src="@drawable/share_img"
+        android:layout_centerHorizontal="true"
         android:contentDescription="@string/share_text"
-        android:layout_centerHorizontal="true">
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:text="@string/share_text"
+        android:textSize="12sp" >
     </Button>
-    
+
     <WebView
         android:id="@+id/webview"
-        android:layout_below="@+id/shareImgBtn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/shareImgBtn" />
 
 </RelativeLayout>

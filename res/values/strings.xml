@@ -28,6 +28,7 @@
     <string name="share_text">แบ่งปัน</string>
     <string name="internet_disconnect_aleart_msg">การเชื่อมต่อมีปัญหา กรุณาตรวจสอบการเชื่อมต่ออีกครั้ง</string>
     <string name="n_string">น</string>
+    <string name="continue_read_text">อ่านต่อ</string>
     <string name="from_text">ที่มา</string>
     <string name="by_text">โดย</string>
     <string name="dailynews_text">เดลินิวส์</string>
