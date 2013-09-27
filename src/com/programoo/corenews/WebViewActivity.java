@@ -55,15 +55,5 @@ public class WebViewActivity extends Activity
 		
 		myWebView.loadDataWithBaseURL("file:///assets/", html,
 				"text/html", "utf-8", null);
-		
-		// myWebView
-		// .loadData(HtmlString, "contentType=text/html", "charset=UTF-8");
-		
-		// WebSettings webSettings = myWebView.getSettings();
-		// webSettings.setJavaScriptEnabled(true);
-		// myWebView.getSettings().setPluginsEnabled(true);
-		// myWebView.loadDataWithBaseURL(null, html, mime, encoding, null);
-		
-		// myWebView.loadUrl(url);
 	}
 }

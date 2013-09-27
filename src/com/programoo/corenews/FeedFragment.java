@@ -565,9 +565,9 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 	{
 		super.onStart();
 		// init speaker
-		Intent checkIntent = new Intent();
-		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-		startActivityForResult(checkIntent, Info.SPEAK_AVAILABLE);
+		//Intent checkIntent = new Intent();
+		//checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+		//startActivityForResult(checkIntent, Info.SPEAK_AVAILABLE);
 	}
 	
 	@Override

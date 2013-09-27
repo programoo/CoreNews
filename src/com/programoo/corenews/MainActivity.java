@@ -23,9 +23,7 @@ public class MainActivity extends FragmentActivity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		setContentView(R.layout.activity_main);
-
 		// initialize global variable
-
 		Log.d(tag, "onCreate");
 
 		mViewPager = (ViewPager) findViewById(R.id.pager);

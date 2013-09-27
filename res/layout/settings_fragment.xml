@@ -1,66 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/providerSelectorTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/provider_selector_text" />
+    <Spinner
+        android:id="@+id/typeSelectSpn"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
 
-    <CheckBox
-        android:id="@+id/thairathCheckBox"
+    <EditText 
+        android:id="@+id/urlFeedEdt"
         android:layout_width="wrap_content"
+        android:inputType="textUri"
+        android:hint="@string/addfeed_edt_hint_text"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/providerSelectorTextView"
-        android:text="@string/thairath_text" />
-
-    <CheckBox
-        android:id="@+id/dailynewsCheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/thairathCheckBox"
-        android:checked="true"
-        android:text="@string/dailynews_text" />
-
-    <TextView
-        android:id="@+id/typeNewsSelectorTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/dailynewsCheckBox"
-        android:text="@string/typenews_selector_text" />
-
-    <CheckBox
-        android:id="@+id/politicalCb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/typeNewsSelectorTextView"
-        android:text="@string/political_text" />
-
-    <CheckBox
-        android:id="@+id/sportCb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/politicalCb"
-        android:checked="true"
-        android:text="@string/sport_text" />
-
-    <CheckBox
-        android:id="@+id/entertainmentCb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/sportCb"
-        android:checked="true"
-        android:text="@string/entertainment_text" />
-
-    <CheckBox
-        android:id="@+id/technologyCb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/entertainmentCb"
-        android:checked="true"
-        android:text="@string/it_text" />
-
+        android:layout_toRightOf="@+id/typeSelectSpn"/>
+    
 </RelativeLayout>
