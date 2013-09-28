@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -18,34 +19,36 @@ import com.programoo.snews.R;
 public class SettingFragment extends Fragment implements OnItemSelectedListener
 {
 	private String TAG = this.getClass().getSimpleName();
-	private View newsFragment;
+	private View layout;
 	FeedListViewAdapter ardap;
+	private ListView providerLv;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		//predefinde unique add provider
+		//http://www.komchadluek.net/rss/news_widget.xml
 		
 	}
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState)
 	{
-		this.newsFragment = inflater.inflate(R.layout.settings_fragment,
+		this.layout = inflater.inflate(R.layout.settings_fragment,
 				container, false);
-		Log.d(TAG, "onCreateView");
+		providerLv = (ListView) this.layout.findViewById(R.id.providerLv);
+		ProviderListViewAdapter pAdapter = new ProviderListViewAdapter(getActivity(), Info.getInstance().pList);
+		providerLv.setAdapter(pAdapter);
 		
-		Spinner spinner = (Spinner) this.newsFragment
+		
+		Spinner spinner = (Spinner) this.layout
 				.findViewById(R.id.typeSelectSpn);
-		ArrayList<String> a = new ArrayList<String>();
-		a.add("first");
-		a.add("เพิ่มประเภทข่าว");
-		spinner.setAdapter(new SettingsFragmentSpinnerAdapter(getActivity(),
-				R.layout.settings_spinerview_fragment, a));
-		spinner.setOnItemSelectedListener(this);
+		//spinner.setAdapter(new SettingsFragmentSpinnerAdapter(getActivity(),
+		//		R.layout.settings_spinerview_fragment, a));
+		//spinner.setOnItemSelectedListener(this);
 
-		return newsFragment;
+		return layout;
 	}
 	
 	public void onItemSelected(AdapterView<?> parent, View view, int pos,

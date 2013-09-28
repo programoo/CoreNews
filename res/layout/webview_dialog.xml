@@ -43,10 +43,9 @@
         android:layout_below="@+id/imageDialog"
         android:layout_centerHorizontal="true"
         android:contentDescription="@string/share_text"
-        android:minHeight="0dp"
-        android:minWidth="0dp"
         android:text="@string/share_text"
         android:textSize="12sp" >
+
     </Button>
 
     <WebView

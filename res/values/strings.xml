@@ -9,6 +9,7 @@
     <string name="news_title">ข่าว</string>
 
     <!-- settings tab -->
+    <string name="add_source_text">เพิ่มแหล่งข่าว</string>
     <string name="settings_title">ตั้งค่า</string>
     <string name="provider_selector_text">เลือกสำนักพิมพ์</string>
     <string name="typenews_selector_text">เลือกประเภทข่าว</string>

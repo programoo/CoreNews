@@ -1,13 +1,6 @@
 <resources>
-
-    <style name="MyTheme" parent="android:Theme.Holo">
+    <style name="MyTheme" parent="@android:style/Theme.NoTitleBar">
         <item name="android:background">#222222</item>
         <item name="android:textColor">#aaaaaa</item>
     </style>
-
-    <!--
-                 <item name="android:background">#222222</item>
-    			        <item name="android:textColor">#aaaaaa</item>
-    -->
-
 </resources>

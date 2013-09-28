@@ -13,8 +13,7 @@ import com.programoo.snews.R;
 
 public class SettingsFragmentSpinnerAdapter extends BaseAdapter
 {
-	private String tag = this.getClass().getSimpleName();
-	private View newsFragment;
+	private String TAG = this.getClass().getSimpleName();
 	FeedListViewAdapter ardap;
 	
 	private Context context;
@@ -23,7 +22,7 @@ public class SettingsFragmentSpinnerAdapter extends BaseAdapter
 	public SettingsFragmentSpinnerAdapter(Context context,
 			int textViewResourceId, ArrayList<String> data)
 	{
-		//super(context, textViewResourceId, data);
+		super();
 		this.data = data;
 		this.context = context;
 		

@@ -4,17 +4,53 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <Spinner
-        android:id="@+id/typeSelectSpn"
-        android:layout_width="50dp"
-        android:layout_height="50dp" />
-
-    <EditText 
-        android:id="@+id/urlFeedEdt"
-        android:layout_width="wrap_content"
-        android:inputType="textUri"
-        android:hint="@string/addfeed_edt_hint_text"
+    <TextView 
+        android:id="@+id/addNewsSourceTv"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/typeSelectSpn"/>
+        android:layout_width="wrap_content"
+        android:text="@string/add_source_text"/>
     
+    <RelativeLayout
+        android:layout_below="@+id/addNewsSourceTv"
+        android:id="@+id/addFeedLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" >
+
+        <Spinner
+            android:id="@+id/typeSelectSpn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/urlFeedEdt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/typeSelectSpn"
+            android:hint="@string/addfeed_edt_hint_text"
+            android:inputType="textUri" />
+
+        <ImageButton
+            android:id="@+id/addFeedImgBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_toRightOf="@+id/urlFeedEdt"
+            android:background="@null"
+            android:contentDescription="@string/hello_world"
+            android:scaleType="fitCenter"
+            android:src="@drawable/plus_img" >
+        </ImageButton>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/providerSelectorLv"
+        android:layout_below="@+id/addFeedLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        
+        <ListView android:id="@+id/providerLv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></ListView>
+    </RelativeLayout>
+
 </RelativeLayout>

@@ -2,17 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:descendantFocusability="blocksDescendants"
     android:background="@drawable/listview_rounded_bg"
+    android:descendantFocusability="blocksDescendants"
     android:orientation="vertical" >
 
     <ImageButton
         android:id="@+id/newsIcon"
         android:layout_width="80dp"
         android:layout_height="48dp"
-        android:background="@color/red"
-        android:scaleType="fitXY"
+        android:background="@null"
         android:contentDescription="@string/hello_world"
+        android:scaleType="fitCenter"
         android:src="@drawable/ic_launcher" />
 
     <TextView

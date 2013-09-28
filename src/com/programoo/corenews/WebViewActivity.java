@@ -2,15 +2,10 @@ package com.programoo.corenews;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.WebChromeClient;
-import android.webkit.WebChromeClient.CustomViewCallback;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.FrameLayout;
-import android.widget.VideoView;
 
 import com.programoo.snews.R;
 

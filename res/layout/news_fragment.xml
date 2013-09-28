@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:cacheColorHint="#00000000"
         android:divider="@android:color/transparent"
-        android:dividerHeight="10.0sp" />
+        android:dividerHeight="10.0sp"
+        android:padding="0dp" />
 
 </RelativeLayout>
