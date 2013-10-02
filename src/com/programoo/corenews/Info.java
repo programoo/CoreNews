@@ -1,18 +1,17 @@
 package com.programoo.corenews;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.jsoup.Jsoup;
 
-import android.net.ParseException;
+import android.R;
 import android.util.Log;
 
 public class Info
 {
 	public ArrayList<News> newsList;
-	public ArrayList<Provider> pList;
+	public ArrayList<Feeder> pList;
+	public ArrayList<String> typeList;
 
 	public static int SPEAK_AVAILABLE = 555;
 	
@@ -22,17 +21,18 @@ public class Info
 	private Info()
 	{
 		newsList = new ArrayList<News>();
-		pList = new ArrayList<Provider>();
+		pList = new ArrayList<Feeder>();
+		typeList = new ArrayList<String>();
+		
+		//add provider
 	
-		uniqueAddProvider(new Provider("technology", "http://www.blognone.com/atom.xml"));
-		uniqueAddProvider(new Provider("other", "http://www.thairath.co.th/rss/news.xml"));
-		uniqueAddProvider(new Provider("news", "http://www.komchadluek.net/rss/news_widget.xml"));
-		uniqueAddProvider(new Provider("kak", "http://www.matichon.co.th/rss/news_conspicuous.xml"));
+		uniqueAddProvider(new Feeder("technology", "http://www.blognone.com/atom.xml"));
+		uniqueAddProvider(new Feeder("other", "http://www.thairath.co.th/rss/news.xml"));
+		uniqueAddProvider(new Feeder("news", "http://www.komchadluek.net/rss/news_widget.xml"));
+		uniqueAddProvider(new Feeder("kak", "http://www.matichon.co.th/rss/news_conspicuous.xml"));
 		// http://www.krobkruakao.com/rss/News.rss
 		// http://rssfeeds.sanook.com/rss/feeds/sanook/news.index.xml
-		uniqueAddProvider(new Provider("sanook", "http://rssfeeds.sanook.com/rss/feeds/sanook/news.index.xml"));
-		
-		
+		uniqueAddProvider(new Feeder("sanook", "http://rssfeeds.sanook.com/rss/feeds/sanook/news.index.xml"));
 	}
 	
 	public static Info getInstance()
@@ -98,7 +98,21 @@ public class Info
 		return Jsoup.parse(html).text();
 	}
 	
-	public void uniqueAddProvider(Provider pv){
+	public void uniqueAddProvider(Feeder pv){
+		
+		//add to type list first
+		boolean newType = true;
+		for(int i=0;i<typeList.size();i++){
+			if(typeList.get(i).equalsIgnoreCase(pv.type)){
+				newType = false;
+				break;
+			}
+		}
+		
+		if(newType){
+			typeList.add(pv.type);
+		}
+		
 		for(int i=0;i<pList.size();i++){
 			if(pList.get(i).id.equalsIgnoreCase(pv.id)){
 				return;

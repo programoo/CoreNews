@@ -42,15 +42,29 @@
         </ImageButton>
     </RelativeLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/providerSelectorLv"
         android:layout_below="@+id/addFeedLayout"
         android:layout_width="match_parent"
+        android:baselineAligned="false"
         android:layout_height="wrap_content" >
         
-        <ListView android:id="@+id/providerLv"
-            android:layout_width="wrap_content"
+        
+        <ListView android:id="@+id/typeLv"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
             android:layout_height="wrap_content"></ListView>
-    </RelativeLayout>
+        
+        
+        
+        <ListView android:id="@+id/providerLv"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content"></ListView>
+        
+        
+        
+        
+    </LinearLayout>
 
 </RelativeLayout>

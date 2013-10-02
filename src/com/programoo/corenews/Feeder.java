@@ -1,12 +1,12 @@
 package com.programoo.corenews;
 
-public class Provider
+public class Feeder
 {
 	public String id;
 	public String type;
 	public String url;
 	public String name;
-	public Provider(String type,String url)
+	public Feeder(String type,String url)
 	{
 		this.type = type;
 		this.url = url;

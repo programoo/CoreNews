@@ -86,6 +86,18 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		// Providers require setting user call Back url
 		adapter.addCallBack(Provider.TWITTER,
 				"http://socialauth.in/socialauthdemo/socialAuthSuccessAction.do");
+		
+		//initialize predefind provider
+		Info.getInstance();
+		
+		String[] mTestArray = getResources().getStringArray(R.array.rssProviderArray); 
+		
+		for(int i=0;i<mTestArray.length;i++){
+			Info.getInstance().uniqueAddProvider(new Feeder(mTestArray[i].split(",")[0],mTestArray[i].split(",")[1]));
+
+			Log.i(TAG,"Test array: "+mTestArray[i]);
+		}
+		
 	}
 	
 	private final class ResponseListener implements DialogListener
@@ -93,12 +105,8 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		@Override
 		public void onComplete(Bundle values)
 		{
-			
-			// d("ShareButton", "Authentication Successful");
-			// Get name of provider after authentication
 			final String providerName = values
 					.getString(SocialAuthAdapter.PROVIDER);
-			// d("ShareButton", "Provider Name = " + providerName);
 			Toast.makeText(getActivity(), providerName + " connected",
 					Toast.LENGTH_LONG).show();
 			
@@ -745,7 +753,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		@Override
 		protected String doInBackground(String... uri)
 		{
-			
+			Log.i(TAG,"requesting: "+uri);
 			this.url = uri[0];
 			AjaxCallback<XmlDom> cb1 = new AjaxCallback<XmlDom>();
 			cb1.url(this.url).type(XmlDom.class);
@@ -765,7 +773,6 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 			});
 			this.fetchContentSynchronous();
 			
-			// JSoupTest();
 			return "ok";
 		}
 		
@@ -781,7 +788,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		{
 			for (int i = 0; i < tempList.size(); i++)
 			{
-				// if (tempList.get(i).imgUrl == null)
+				if (tempList.get(i).imgUrl == null)
 				{
 					
 					AjaxCallback<String> cb = new AjaxCallback<String>();
@@ -789,7 +796,6 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 					aq.sync(cb);
 					// i(TAG, "fetching content: " + tempList.get(i).link);
 					String xmlResponseContent = cb.getResult();
-					
 					AjaxStatus statusContent = cb.getStatus();
 					
 					try

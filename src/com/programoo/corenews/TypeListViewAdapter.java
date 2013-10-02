@@ -13,24 +13,19 @@ import android.widget.CheckBox;
 
 import com.programoo.snews.R;
 
-public class ProviderListViewAdapter extends BaseAdapter implements OnClickListener
+public class TypeListViewAdapter extends BaseAdapter implements OnClickListener
 {
 	private String TAG = getClass().getSimpleName();
 	private Context context;
-	private ArrayList<Feeder> pList;
+	private ArrayList<String> typeList;
 	private LayoutInflater inflater = null;
-	//private Typeface tf = null;
 	
-	public ProviderListViewAdapter(Context context, ArrayList<Feeder> pList)
+	public TypeListViewAdapter(Context context, ArrayList<String> typeList)
 	{
 		super();
-		Log.i(TAG,"ProviderListViewAdapter");
+		Log.i(TAG, "ProviderListViewAdapter");
 		this.context = context;
-		this.pList = pList;
-		/*this.tf = Typeface.createFromAsset(this.context.getAssets(),
-				"fonts/DroidSerif-Regular.ttf");
-		Log.d(TAG, "FeedListViewAdapter");
-		*/
+		this.typeList = typeList;
 	}
 	
 	@Override
@@ -41,13 +36,13 @@ public class ProviderListViewAdapter extends BaseAdapter implements OnClickListe
 			this.inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			
-			convertView = inflater.inflate(R.layout.provider_listview,
-					parent, false);
+			convertView = inflater.inflate(R.layout.provider_listview, parent,
+					false);
 			
 		}
 		
 		CheckBox cb = (CheckBox) convertView.findViewById(R.id.providerCb);
-		cb.setText(this.pList.get(position).name);
+		cb.setText(this.typeList.get(position));
 		
 		return convertView;
 		
@@ -56,13 +51,13 @@ public class ProviderListViewAdapter extends BaseAdapter implements OnClickListe
 	@Override
 	public int getCount()
 	{
-		return this.pList.size();
+		return this.typeList.size();
 	}
 	
 	@Override
-	public Feeder getItem(int position)
+	public String getItem(int position)
 	{
-		return this.pList.get(position);
+		return this.typeList.get(position);
 	}
 	
 	@Override
@@ -70,7 +65,7 @@ public class ProviderListViewAdapter extends BaseAdapter implements OnClickListe
 	{
 		return 0;
 	}
-
+	
 	@Override
 	public void onClick(View v)
 	{

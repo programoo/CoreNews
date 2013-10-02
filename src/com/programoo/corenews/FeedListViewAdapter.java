@@ -25,9 +25,9 @@ public class FeedListViewAdapter extends BaseAdapter implements OnClickListener
 	private Context context;
 	private ArrayList<News> newsList;
 	private LayoutInflater inflater = null;
-	private TextView description = null;
-	private ImageView providerIcon = null;
-	private TextView reporterText = null;
+	//private TextView description = null;
+	//private ImageView providerIcon = null;
+	//private TextView reporterText = null;
 	private AQuery aq = null;
 	private Typeface tf = null;
 	
@@ -59,7 +59,7 @@ public class FeedListViewAdapter extends BaseAdapter implements OnClickListener
 		
 		ImageButton iv = (ImageButton) convertView.findViewById(R.id.newsIcon);
 		aq.id(iv)
-				.image(this.newsList.get(position).imgUrl, true, true, 200, 0);
+				.image(this.newsList.get(position).imgUrl,true , false, 200, 0);
 		iv.setOnClickListener(this);
 		iv.setTag(position+"");
 		

@@ -3,6 +3,7 @@ package com.programoo.corenews;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ public class SettingsFragmentSpinnerAdapter extends BaseAdapter
 			int textViewResourceId, ArrayList<String> data)
 	{
 		super();
+		Log.d(TAG,"SettingsFragmentSpinnerAdapter");
 		this.data = data;
 		this.context = context;
 		
