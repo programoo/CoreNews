@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="0dip"
     android:layout_height="wrap_content"
     android:layout_weight="1"
     android:orientation="vertical" >
@@ -10,9 +10,9 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_alignParentTop="true"
-        android:padding="5dp"
         android:layout_centerHorizontal="true"
         android:contentDescription="@string/hello_world"
+        android:padding="5dp"
         android:scaleType="fitCenter" />
 
     <TextView
@@ -21,6 +21,17 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/normal_icon"
         android:layout_centerHorizontal="true"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/unreadCountTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/normal_title"
+        android:background="@drawable/circle"
+        android:padding="3dp"
+        android:textColor="@color/red"
         android:textSize="12sp"
         android:textStyle="bold" />
 

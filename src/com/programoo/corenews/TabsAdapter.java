@@ -22,43 +22,50 @@ import com.programoo.snews.R;
 
 public class TabsAdapter extends FragmentPagerAdapter implements
 		TabHost.OnTabChangeListener, ViewPager.OnPageChangeListener,
-		OnTouchListener {
+		OnTouchListener
+{
 	String tag = getClass().getSimpleName();
 	private final Context mContext;
 	private final TabHost mTabHost;
 	private final ViewPager mViewPager;
 	private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
-
-	static final class TabInfo {
+	
+	static final class TabInfo
+	{
 		@SuppressWarnings("unused")
 		private final String tag;
 		private final Class<?> clss;
 		private final Bundle args;
-
-		TabInfo(String _tag, Class<?> _class, Bundle _args) {
+		
+		TabInfo(String _tag, Class<?> _class, Bundle _args)
+		{
 			tag = _tag;
 			clss = _class;
 			args = _args;
 		}
 	}
-
-	static class DummyTabFactory implements TabHost.TabContentFactory {
+	
+	static class DummyTabFactory implements TabHost.TabContentFactory
+	{
 		private final Context mContext;
-
-		public DummyTabFactory(Context context) {
+		
+		public DummyTabFactory(Context context)
+		{
 			mContext = context;
 		}
-
-		public View createTabContent(String tag) {
+		
+		public View createTabContent(String tag)
+		{
 			View v = new View(mContext);
 			v.setMinimumWidth(0);
 			v.setMinimumHeight(0);
 			return v;
 		}
 	}
-
+	
 	public TabsAdapter(FragmentActivity activity, TabHost tabHost,
-			ViewPager pager) {
+			ViewPager pager)
+	{
 		super(activity.getSupportFragmentManager());
 		Log.i(tag, "TabsAdapter");
 		mContext = activity;
@@ -68,68 +75,90 @@ public class TabsAdapter extends FragmentPagerAdapter implements
 		mViewPager.setAdapter(this);
 		mViewPager.setOnPageChangeListener(this);
 		mViewPager.setOnTouchListener(this);
-
+		
 	}
-
+	
 	public void addTab(TabHost.TabSpec tabSpec, Drawable drawableId,
-			Class<?> clss, Bundle args, String label) {
+			Class<?> clss, Bundle args, String label)
+	{
 		tabSpec.setContent(new DummyTabFactory(mContext));
 		String tag = tabSpec.getTag();
-
+		
 		TabInfo info = new TabInfo(tag, clss, args);
 		Log.d(tag, "label name is: " + label);
 		View tabIndicator = null;
-
-		tabIndicator = LayoutInflater.from(mContext).inflate(
-				R.layout.normal_tabbar_view, mTabHost.getTabWidget(), false);
-		ImageView icon = (ImageView) tabIndicator
-				.findViewById(R.id.normal_icon);
-		icon.setImageDrawable(drawableId);
-
+		if (label.equalsIgnoreCase(mContext.getString(R.string.news_text)))
+		{
+			tabIndicator = LayoutInflater.from(mContext)
+					.inflate(R.layout.badge_tabbar_view,
+							mTabHost.getTabWidget(), false);
+			ImageView icon = (ImageView) tabIndicator
+					.findViewById(R.id.normal_icon);
+			icon.setImageDrawable(drawableId);
+			Info.getInstance().unReadCountTv = (TextView) tabIndicator.findViewById(R.id.unreadCountTv);
+			
+		} else
+		{
+			tabIndicator = LayoutInflater.from(mContext)
+					.inflate(R.layout.normal_tabbar_view,
+							mTabHost.getTabWidget(), false);
+			ImageView icon = (ImageView) tabIndicator
+					.findViewById(R.id.normal_icon);
+			icon.setImageDrawable(drawableId);
+			
+		}
+		
 		TextView tv = (TextView) tabIndicator.findViewById(R.id.normal_title);
 		tv.setText(label);
 		// set font
 		Typeface tf = Typeface.createFromAsset(mContext.getAssets(),
 				"fonts/DroidSerif-Regular.ttf");
 		tv.setTypeface(tf);
-
+		
 		tabSpec.setIndicator(tabIndicator);
 		mTabs.add(info);
 		mTabHost.addTab(tabSpec);
 		notifyDataSetChanged();
 	}
-
+	
 	@Override
-	public int getCount() {
+	public int getCount()
+	{
 		return mTabs.size();
 	}
-
+	
 	@Override
-	public android.support.v4.app.Fragment getItem(int position) {
+	public android.support.v4.app.Fragment getItem(int position)
+	{
 		TabInfo info = mTabs.get(position);
-		return android.support.v4.app.Fragment.instantiate(mContext, info.clss.getName(), info.args);
+		return android.support.v4.app.Fragment.instantiate(mContext,
+				info.clss.getName(), info.args);
 	}
-
-	public void onTabChanged(String tabId) {
+	
+	public void onTabChanged(String tabId)
+	{
 		int position = mTabHost.getCurrentTab();
 		mViewPager.setCurrentItem(position);
 		notifyDataSetChanged();
 		Log.d(tag, "ontabChanged: " + tabId);
-
+		
 	}
-
+	
 	public void onPageScrolled(int position, float positionOffset,
-			int positionOffsetPixels) {
+			int positionOffsetPixels)
+	{
 	}
-
-	public void onPageSelected(int position) {
+	
+	public void onPageSelected(int position)
+	{
 		mTabHost.setCurrentTab(position);
 		Log.d(tag, "page change: " + position);
 	}
-
-	public void onPageScrollStateChanged(int state) {
+	
+	public void onPageScrollStateChanged(int state)
+	{
 	}
-
+	
 	/*
 	 * @Override public boolean onTouch(View v, MotionEvent event) { // TODO
 	 * Auto-generated method stub return true; }
@@ -138,9 +167,10 @@ public class TabsAdapter extends FragmentPagerAdapter implements
 	 * @Override public int getItemPosition(Object object){ return
 	 * PagerAdapter.POSITION_NONE; }
 	 */
-
+	
 	@Override
-	public boolean onTouch(View v, MotionEvent event) {
+	public boolean onTouch(View v, MotionEvent event)
+	{
 		// TODO Auto-generated method stub
 		return true;
 	}

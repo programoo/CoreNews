@@ -92,9 +92,8 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		
 		String[] mTestArray = getResources().getStringArray(R.array.rssProviderArray); 
 		
-		for(int i=0;i<mTestArray.length;i++){
-			Info.getInstance().uniqueAddProvider(new Feeder(mTestArray[i].split(",")[0],mTestArray[i].split(",")[1]));
-
+		for(int i=0;i<5;i++){
+			Info.getInstance().uniqueAddProvider(new Feeder(mTestArray[i].split(",")[0],mTestArray[i].split(",")[1],false));
 			Log.i(TAG,"Test array: "+mTestArray[i]);
 		}
 		
@@ -247,6 +246,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		
 		for (int i = 0; i < Info.getInstance().pList.size(); i++)
 		{
+			if(Info.getInstance().pList.get(i).isSelected)
 			new SynchronousHtmlFetch()
 					.execute(Info.getInstance().pList.get(i).url);
 		}
@@ -392,18 +392,15 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		
 		for (int i = 0; i < Info.getInstance().newsList.size(); i++)
 		{
-			tmpNewsList.add(Info.getInstance().newsList.get(i).clone());
+			tmpNewsList.add(Info.getInstance().newsList.get(i));
 		}
 		
 		FeedListViewAdapter ardap = new FeedListViewAdapter(getActivity(),
 				tmpNewsList, aq);
 		lv.setAdapter(ardap);
 		
-		for (int i = 0; i < Info.getInstance().newsList.size(); i++)
-		{
-			// i(TAG, "url: " + Info.newsList.get(i).link + ",,,,,,,,"
-			// + "img: " + Info.newsList.get(i).imgUrl);
-		}
+		//show unread message
+		Info.getInstance().unReadCountTv.setText(Info.getInstance().getUnreadNews()+"");
 	}
 	
 	public void diffImageUrlFirst(String url, String html, AjaxStatus status)
@@ -647,7 +644,14 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		News n = (News) this.lv.getItemAtPosition(arg2);
 		aq.id(iv).image(n.imgUrl, true, true, 200, 0);
 		currentShowOnDialogNew = n;// for share later
-		// bm = BitmapFactory.decodeResource(getResources(), R.drawable.image);
+		
+		//mark as read
+		ImageView isReadIv = (ImageView) arg1.findViewById(R.id.isReadIv);
+		isReadIv.setVisibility(View.GONE);
+		n.isRead = true;
+		//update unReadText
+		Info.getInstance().unReadCountTv.setText(Info.getInstance().getUnreadNews()+"");
+		
 		// WEBVIEW settings
 		String html = "" + "<html>" + "<head>"
 				+ "<style type='text/css'>a:link {color:#ff8c00;}" + "body {"

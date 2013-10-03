@@ -39,15 +39,15 @@ public class MainActivity extends FragmentActivity {
 		tabArgs.putString("collection", "tab_news");
 		tabArgs.putInt("id", 0);
 		mTabsAdapter.addTab(mTabHost.newTabSpec("tab_news"), getResources()
-				.getDrawable(R.drawable.news_icon), FeedFragment.class,
-				tabArgs, getString(R.string.news_title));
+				.getDrawable(R.drawable.news_tabbar_img), FeedFragment.class,
+				tabArgs, getString(R.string.news_text));
 
 		tabArgs = new Bundle();
 		tabArgs.putString("collection", "tab_setting");
 		tabArgs.putInt("id", 1);
 		mTabsAdapter.addTab(mTabHost.newTabSpec("tab_news"), getResources()
-				.getDrawable(R.drawable.settings_icon), SettingFragment.class,
-				tabArgs, getString(R.string.settings_title));
+				.getDrawable(R.drawable.settings_tabbar_img), SettingFragment.class,
+				tabArgs, getString(R.string.settings_text));
 
 	}
 

@@ -48,6 +48,10 @@ public class ProviderListViewAdapter extends BaseAdapter implements OnClickListe
 		
 		CheckBox cb = (CheckBox) convertView.findViewById(R.id.providerCb);
 		cb.setText(this.pList.get(position).name);
+		if(this.pList.get(position).isSelected){
+			cb.setChecked(true);
+		}
+		
 		
 		return convertView;
 		

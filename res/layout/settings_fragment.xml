@@ -4,17 +4,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <TextView 
+    <TextView
         android:id="@+id/addNewsSourceTv"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:text="@string/add_source_text"/>
-    
+        android:layout_height="wrap_content"
+        android:text="@string/add_source_text" />
+
     <RelativeLayout
-        android:layout_below="@+id/addNewsSourceTv"
         android:id="@+id/addFeedLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/addNewsSourceTv"
         android:layout_centerHorizontal="true" >
 
         <Spinner
@@ -43,28 +43,49 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/providerSelectorLv"
-        android:layout_below="@+id/addFeedLayout"
+        android:id="@+id/providerSelectorTv"
         android:layout_width="match_parent"
-        android:baselineAligned="false"
-        android:layout_height="wrap_content" >
-        
-        
-        <ListView android:id="@+id/typeLv"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/addFeedLayout"
+        android:baselineAligned="false" >
+
+        <TextView
+            android:id="@+id/typeTv"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:layout_height="wrap_content"></ListView>
-        
-        
-        
-        <ListView android:id="@+id/providerLv"
+            android:text="@string/type_news_text" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/providerTv"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:layout_height="wrap_content"></ListView>
-        
-        
-        
-        
+            android:text="@string/provider_news_text" >
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/providerSelectorLv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/providerSelectorTv"
+        android:baselineAligned="false" >
+
+        <ListView
+            android:id="@+id/typeLv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5" >
+        </ListView>
+
+        <ListView
+            android:id="@+id/providerLv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5" >
+        </ListView>
     </LinearLayout>
 
 </RelativeLayout>

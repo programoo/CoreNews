@@ -6,7 +6,8 @@
     <string name="hello_world">Hello world!</string>
 
     <!-- news tab -->
-    <string name="news_title">ข่าว</string>
+    <string name="news_text">ข่าว</string>
+    <string name="settings_text">ตั้งค่า</string>
 
     <!-- settings tab -->
     <string name="add_source_text">เพิ่มแหล่งข่าว</string>
@@ -23,6 +24,9 @@
     <string name="other_text">ทั่วไป</string>
 
     <!-- thai translate -->
+
+    <string name="type_news_text">ประเภทของข่าว</string>
+    <string name="provider_news_text">ที่มาของข่าว</string>
     <string name="addfeed_edt_hint_text">url ของผู้ให้บริการ rss</string>
     <string name="post_text">โพสต์</string>
     <string name="your_comment_hint_text">ความคิดเห็นของคุณ</string>

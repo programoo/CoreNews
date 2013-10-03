@@ -76,6 +76,16 @@ public class FeedListViewAdapter extends BaseAdapter implements OnClickListener
 		String providerText = this.newsList.get(position).provider.split("[.]")[1]+" "+this.newsList.get(position).pubDate;
 		reporterText.setText(providerText);
 		
+		ImageView isReadIv = (ImageView) convertView.findViewById(R.id.isReadIv);
+		
+		if(this.newsList.get(position).isRead){
+			isReadIv.setVisibility(View.GONE);
+		}
+		else{
+			isReadIv.setVisibility(View.VISIBLE);
+		}
+		
+		
 		return convertView;
 		
 	}

@@ -8,6 +8,7 @@ public class News
 	String description;
 	String pubDate;
 	String creator;
+	boolean isRead;
 	// update later
 	String imgUrl = "undefined";
 	long unixTime = 0;
@@ -21,6 +22,8 @@ public class News
 		this.description = description;
 		this.pubDate = pubDate;
 		this.creator = creator;
+		
+		isRead=false;
 	}
 	
 	public News clone(){

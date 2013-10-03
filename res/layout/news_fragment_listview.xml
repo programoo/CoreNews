@@ -6,6 +6,17 @@
     android:descendantFocusability="blocksDescendants"
     android:orientation="vertical" >
 
+    
+    
+    <ImageView 
+        android:id="@+id/isReadIv"
+        android:layout_height="10dp"
+        android:layout_width="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/is_read_img"
+        android:contentDescription="@string/hello_world"/>
+    
     <ImageButton
         android:id="@+id/newsIcon"
         android:layout_width="80dp"
@@ -17,6 +28,7 @@
 
     <TextView
         android:id="@+id/newsText"
+        android:layout_toLeftOf="@+id/isReadIv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/newsIcon"
