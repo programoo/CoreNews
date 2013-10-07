@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/newsIcon"
         android:singleLine="true"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:typeface="sans" />
 
     <RelativeLayout
@@ -45,23 +45,14 @@
         android:layout_toRightOf="@+id/newsIcon"
         android:background="@drawable/signature_rounded_bg" >
 
-        <ImageView
-            android:id="@+id/providerIcon"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_alignParentBottom="true"
-            android:contentDescription="@string/hello_world"
-            android:src="@drawable/thairath" />
-
         <TextView
             android:id="@+id/fromText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/providerIcon"
             android:ellipsize="marquee"
             android:maxLines="1"
-            android:textSize="8sp"
+            android:textSize="12sp"
             android:typeface="sans" />
     </RelativeLayout>
 

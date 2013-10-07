@@ -7,12 +7,12 @@
 
     <ImageView
         android:id="@+id/normal_icon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:contentDescription="@string/hello_world"
-        android:padding="5dp"
+        android:padding="0dp"
         android:scaleType="fitCenter" />
 
     <TextView
@@ -22,6 +22,8 @@
         android:layout_below="@+id/normal_icon"
         android:layout_centerHorizontal="true"
         android:textSize="12sp"
+        android:padding="0dp"
+        android:layout_margin="0dp"
         android:textStyle="bold" />
 
     <TextView
@@ -31,6 +33,7 @@
         android:layout_toRightOf="@+id/normal_title"
         android:background="@drawable/circle"
         android:padding="3dp"
+        android:visibility="gone"
         android:textColor="@color/red"
         android:textSize="12sp"
         android:textStyle="bold" />

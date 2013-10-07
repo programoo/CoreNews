@@ -1,16 +1,16 @@
 package com.programoo.corenews;
 
-import java.util.ArrayList;
-
+import object.News;
+import object.SArrayList;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -23,15 +23,13 @@ public class FeedListViewAdapter extends BaseAdapter implements OnClickListener
 {
 	private String TAG = getClass().getSimpleName();
 	private Context context;
-	private ArrayList<News> newsList;
+	private SArrayList newsList;
 	private LayoutInflater inflater = null;
-	//private TextView description = null;
-	//private ImageView providerIcon = null;
-	//private TextView reporterText = null;
 	private AQuery aq = null;
 	private Typeface tf = null;
 	
-	public FeedListViewAdapter(Context context, ArrayList<News> newsList,AQuery aq)
+	public FeedListViewAdapter(Context context, SArrayList newsList,
+			AQuery aq)
 	{
 		super();
 		this.context = context;
@@ -57,34 +55,41 @@ public class FeedListViewAdapter extends BaseAdapter implements OnClickListener
 			
 		}
 		
-		ImageButton iv = (ImageButton) convertView.findViewById(R.id.newsIcon);
-		aq.id(iv)
-				.image(this.newsList.get(position).imgUrl,true , false, 200, 0);
-		iv.setOnClickListener(this);
-		iv.setTag(position+"");
+		News newsObj = (News) this.newsList.get(position);
 		
-		ImageView providerIcon = (ImageView) convertView
-				.findViewById(R.id.providerIcon);
-		providerIcon.setImageResource(R.drawable.reporter_icon);
+		ImageButton iv = (ImageButton) convertView.findViewById(R.id.newsIcon);
+		
+		if ( newsObj.imgUrl != null ){
+			aq.id(iv).image(newsObj.imgUrl, true, false, 200, 0);
+		}
+		else{
+			iv.setImageResource(R.drawable.ic_launcher);
+		}
+		
+		iv.setOnClickListener(this);
+		iv.setTag(newsObj);
+		
 		TextView description = (TextView) convertView
 				.findViewById(R.id.newsText);
-		description.setText(this.newsList.get(position).title);
+		description.setText(newsObj.title);
 		description.setTypeface(tf);
 		
 		TextView reporterText = (TextView) convertView
 				.findViewById(R.id.fromText);
-		String providerText = this.newsList.get(position).provider.split("[.]")[1]+" "+this.newsList.get(position).pubDate;
+		String providerText = newsObj.provider.split("[.]")[1] + " "
+				+ newsObj.pubDate;
 		reporterText.setText(providerText);
 		
-		ImageView isReadIv = (ImageView) convertView.findViewById(R.id.isReadIv);
+		ImageView isReadIv = (ImageView) convertView
+				.findViewById(R.id.isReadIv);
 		
-		if(this.newsList.get(position).isRead){
+		if (newsObj.isRead)
+		{
 			isReadIv.setVisibility(View.GONE);
-		}
-		else{
+		} else
+		{
 			isReadIv.setVisibility(View.VISIBLE);
 		}
-		
 		
 		return convertView;
 		
@@ -99,7 +104,7 @@ public class FeedListViewAdapter extends BaseAdapter implements OnClickListener
 	@Override
 	public News getItem(int position)
 	{
-		return this.newsList.get(position);
+		return (News) this.newsList.get(position);
 	}
 	
 	@Override
@@ -107,13 +112,13 @@ public class FeedListViewAdapter extends BaseAdapter implements OnClickListener
 	{
 		return 0;
 	}
-
+	
 	@Override
 	public void onClick(View v)
 	{
-		//v.getTag()
-		int position = Integer.parseInt(v.getTag()+"");
-		Log.i(TAG,"onClick: "+v.getTag());
+		News newsMention = (News) v.getTag();
+		
+		Log.i(TAG, "onClick: " + newsMention.toString());
 		final Dialog dialog = new Dialog(this.context);
 		dialog.getWindow();
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -121,9 +126,9 @@ public class FeedListViewAdapter extends BaseAdapter implements OnClickListener
 		dialog.setCancelable(true);
 		dialog.show();
 		
-		ImageView iv = (ImageView) dialog.findViewById(R.id.fullScreenImgDialog);
-		aq.id(iv).image(this.newsList.get(position).imgUrl, true, true);
-		//aq.id(iv).image(this.newsList.get(position).imgUrl, true, true, 0, 0);
+		ImageView iv = (ImageView) dialog
+				.findViewById(R.id.fullScreenImgDialog);
+		aq.id(iv).image(newsMention.imgUrl, true, true);
 		
 	}
 	

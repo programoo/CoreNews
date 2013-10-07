@@ -1,38 +1,47 @@
 package com.programoo.corenews;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import object.SArrayList;
+import object.SObject;
 
 import org.jsoup.Jsoup;
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 public class Info
 {
-	public ArrayList<News> newsList;
-	public ArrayList<Feeder> pList;
 	public ArrayList<String> typeList;
+	public ArrayList<String> isReadList;
 	public TextView unReadCountTv;
 	public static int SPEAK_AVAILABLE = 555;
-	
+	public Gson gson;
 	// singleton pattern
+	
 	private static Info instance = null;
 	
 	private Info()
 	{
-		newsList = new ArrayList<News>();
-		pList = new ArrayList<Feeder>();
 		typeList = new ArrayList<String>();
+		isReadList = new ArrayList<String>();
 		unReadCountTv = null;
-		//add provider
+		gson = new Gson();
+		// add provider
+	}
 	
-		uniqueAddProvider(new Feeder("technology", "http://www.blognone.com/atom.xml",true));
-		uniqueAddProvider(new Feeder("other", "http://www.thairath.co.th/rss/news.xml",true));
-		uniqueAddProvider(new Feeder("news", "http://www.komchadluek.net/rss/news_widget.xml",true));
-		uniqueAddProvider(new Feeder("kak", "http://www.matichon.co.th/rss/news_conspicuous.xml",true));
-		// http://www.krobkruakao.com/rss/News.rss
-		// http://rssfeeds.sanook.com/rss/feeds/sanook/news.index.xml
-		uniqueAddProvider(new Feeder("sanook", "http://rssfeeds.sanook.com/rss/feeds/sanook/news.index.xml",true));
+	public void cleanCloseInfo()
+	{
+		Info.instance = null;
 	}
 	
 	public static Info getInstance()
@@ -42,39 +51,6 @@ public class Info
 			instance = new Info();
 		}
 		return instance;
-	}
-	
-	
-	public int getUnreadNews(){
-		int count=0;
-		for(int i=0;i<Info.getInstance().newsList.size();i++){
-			if(!Info.getInstance().newsList.get(i).isRead){
-				count++;
-			}
-		}
-		return count;
-	}
-	
-	public void uniqueAdd(News n)
-	{
-		for (int i = 0; i < this.newsList.size(); i++)
-		{
-			if (this.newsList.get(i).link.equalsIgnoreCase(n.link))
-				return;
-		}
-		this.newsList.add(n);
-	}
-	
-	public News getNewsByLink(String link)
-	{
-		for (int i = 0; i < this.newsList.size(); i++)
-		{
-			if (this.newsList.get(i).link.equals(link))
-			{
-				return this.newsList.get(i);
-			}
-		}
-		return null;
 	}
 	
 	public static void longInfo(String tag, String str)
@@ -87,51 +63,106 @@ public class Info
 			Log.i(tag, str);
 	}
 	
-	public void sortNewsList()
-	{
-		for (int i = 0; i < this.newsList.size(); i++)
-		{
-			for (int j = i; j < this.newsList.size() - 1; j++)
-			{
-				News jA = this.newsList.get(j);
-				News jB = this.newsList.get(j + 1);
-				if (jB.unixTime > jA.unixTime)
-				{
-					this.newsList.set(j + 1, jA);
-					this.newsList.set(j, jB);
-				}
-			}
-		}
-	}
-	
 	public static String html2text(String html)
 	{
 		return Jsoup.parse(html).text();
 	}
 	
-	public void uniqueAddProvider(Feeder pv){
-		
-		//add to type list first
-		boolean newType = true;
-		for(int i=0;i<typeList.size();i++){
-			if(typeList.get(i).equalsIgnoreCase(pv.type)){
-				newType = false;
-				//break;
-			}
+	public void writeFiles(Context ctx, String fileName, String data)
+	{
+		BufferedWriter bufferedWriter;
+		try
+		{
+			bufferedWriter = new BufferedWriter(new FileWriter(new File(
+					ctx.getFilesDir() + File.separator + fileName)));
+			bufferedWriter.write(data);
+			bufferedWriter.close();
+			
+		} catch (IOException e)
+		{
+			e.printStackTrace();
 		}
-		
-		if(newType){
-			typeList.add(pv.type);
-		}
-		//unique source list
-		boolean newProvider=true;
-		for(int i=0;i<pList.size();i++){
-			if(pList.get(i).name.equalsIgnoreCase(pv.name)){
-				newProvider = false;
-			}
-		}
-		if(newProvider)
-			pList.add(pv);
 	}
+	
+	public ArrayList<String> readFile(Context ctx, String fileName)
+	{
+		ArrayList<String> fileToAl = new ArrayList<String>();
+		// read file line by line
+		BufferedReader bufferedReader;
+		try
+		{
+			bufferedReader = new BufferedReader(new FileReader(new File(
+					ctx.getFilesDir() + File.separator + fileName)));
+			String temp = "undefined";
+			while ((temp = bufferedReader.readLine()) != null)
+			{
+				fileToAl.add(temp);
+				Log.i("Info", "read from read: " + temp);
+			}
+			bufferedReader.close();
+			
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			return fileToAl;
+			
+		}
+		return fileToAl;
 		
+	}
+	
+	public static String serializeFromArrayList(Context ctx, String fileName,
+			SArrayList al, Class<?> classType)
+	{
+		String serializeData = "";
+		for (int i = 0; i < al.size(); i++)
+		{
+			serializeData += al.get(i).toString() + "\n";
+		}
+		// write serializeData
+		BufferedWriter bufferedWriter;
+		try
+		{
+			bufferedWriter = new BufferedWriter(new FileWriter(new File(
+					ctx.getFilesDir() + File.separator + fileName)));
+			bufferedWriter.write(serializeData);
+			bufferedWriter.close();
+			
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return serializeData;
+	}
+	
+	public static boolean deserializeToGenericArrayList(Context ctx,
+			String fileName, SArrayList al, Class<?> classType)
+	{
+		
+		BufferedReader bufferedReader;
+		try
+		{
+			bufferedReader = new BufferedReader(new FileReader(new File(
+					ctx.getFilesDir() + File.separator + fileName)));
+			
+			String temp = "";
+			Gson gson = new Gson();
+			while ((temp = bufferedReader.readLine()) != null)
+			{
+				Log.i("Info", "read from read: " + temp);
+				SObject genericObj = (SObject) gson.fromJson(temp, classType);
+				// unique add prevent some bug in future
+				al.add(genericObj);
+			}
+			bufferedReader.close();
+			return true;
+			
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 }

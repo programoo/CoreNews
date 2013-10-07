@@ -1,5 +1,6 @@
 package com.programoo.corenews;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ListView;
+
 import com.programoo.snews.R;
 
 public class SettingFragment extends Fragment implements OnItemSelectedListener
@@ -18,46 +20,65 @@ public class SettingFragment extends Fragment implements OnItemSelectedListener
 	FeedListViewAdapter ardap;
 	private ListView providerLv;
 	private ListView typeLv;
-	
+	private MainActivity mCtx;
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		//predefinde unique add provider
-		//http://www.komchadluek.net/rss/news_widget.xml
+		// read settings
+		Log.i(TAG, "onCreate");
+		mCtx = (MainActivity) getActivity();
 	}
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState)
 	{
-		this.layout = inflater.inflate(R.layout.settings_fragment,
-				container, false);
+		
+		Log.i(TAG, "onCreateView");
+		
+		this.layout = inflater.inflate(R.layout.settings_fragment, container,
+				false);
 		providerLv = (ListView) this.layout.findViewById(R.id.providerLv);
 		typeLv = (ListView) this.layout.findViewById(R.id.typeLv);
-
-		ProviderListViewAdapter pAdapter = new ProviderListViewAdapter(getActivity(), Info.getInstance().pList);
+		
+		ProviderListViewAdapter pAdapter = new ProviderListViewAdapter(
+				getActivity(), mCtx.fList);
 		providerLv.setAdapter(pAdapter);
 		
-		TypeListViewAdapter p2Adapter = new TypeListViewAdapter(getActivity(), Info.getInstance().typeList);
+		TypeListViewAdapter p2Adapter = new TypeListViewAdapter(getActivity(),
+				Info.getInstance().typeList);
 		typeLv.setAdapter(p2Adapter);
 		
-		//Spinner spinner = (Spinner) this.layout
-		//		.findViewById(R.id.typeSelectSpn);
-		//spinner.setAdapter(new SettingsFragmentSpinnerAdapter(getActivity(),
-		//		R.layout.settings_spinerview_fragment, a));
-		//spinner.setOnItemSelectedListener(this);
-
 		return layout;
+	}
+	
+	@Override
+	public void onStop()
+	{
+		super.onStop();
+		Log.d(TAG, "on stop");
+	}
+	
+	@Override
+	public void onStart()
+	{
+		super.onStart();
+		Log.d(TAG, "on start");
+	}
+	
+	@Override
+	public void onPause()
+	{
+		super.onPause();
+		Log.d(TAG, "on pause");
+		
 	}
 	
 	public void onItemSelected(AdapterView<?> parent, View view, int pos,
 			long id)
 	{
-		//TextView tv = (TextView) view.findViewById(R.id.dataSpinnerTv);
 		String itemSelect = (String) parent.getItemAtPosition(pos);
-		Log.i(TAG,"You select: "+itemSelect);
-		// An item was selected. You can retrieve the selected item using
-		// parent.getItemAtPosition(pos)
+		Log.i(TAG, "You select: " + itemSelect);
 	}
 	
 	public void onNothingSelected(AdapterView<?> parent)

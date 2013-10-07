@@ -153,6 +153,7 @@ public class TabsAdapter extends FragmentPagerAdapter implements
 	{
 		mTabHost.setCurrentTab(position);
 		Log.d(tag, "page change: " + position);
+				
 	}
 	
 	public void onPageScrollStateChanged(int state)

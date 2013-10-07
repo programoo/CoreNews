@@ -12,7 +12,6 @@
         android:scaleType="fitCenter"
         android:contentDescription="@string/hello_world"
         android:layout_centerHorizontal="true">
-       
     </ImageView>
 
 </RelativeLayout>
