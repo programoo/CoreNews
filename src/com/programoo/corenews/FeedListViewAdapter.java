@@ -56,14 +56,15 @@ public class FeedListViewAdapter extends BaseAdapter implements OnClickListener
 		}
 		
 		News newsObj = (News) this.newsList.get(position);
+		convertView.setTag(newsObj);
 		
 		ImageButton iv = (ImageButton) convertView.findViewById(R.id.newsIcon);
 		
 		if ( newsObj.imgUrl != null ){
-			aq.id(iv).image(newsObj.imgUrl, true, false, 200, 0);
+			aq.id(iv).image(newsObj.imgUrl, true, true, 200, 0);
 		}
 		else{
-			iv.setImageResource(R.drawable.ic_launcher);
+			iv.setImageResource(R.drawable.default_img);
 		}
 		
 		iv.setOnClickListener(this);

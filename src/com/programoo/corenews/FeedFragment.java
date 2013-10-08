@@ -1,10 +1,8 @@
 package com.programoo.corenews;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import object.News;
 import object.SArrayList;
@@ -43,6 +41,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidquery.AQuery;
@@ -59,9 +58,6 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 	FeedListViewAdapter ardap;
 	private ListView lv;
 	private AQuery aq;
-	private SArrayList tempList;
-	private ArrayList<String> imgUrlList1;
-	private int imgLocationIdx;
 	
 	String blognone = "http://www.blognone.com/atom.xml";
 	String thairath = "http://www.thairath.co.th/rss/news.xml";
@@ -83,7 +79,6 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		mCtx = (MainActivity) getActivity();
 		imgIdxHM = new HashMap<String, Integer>();
 		
-		imgLocationIdx = 0;
 		// share button settings
 		adapter = new SocialAuthAdapter(new ResponseListener());
 		// Add providers
@@ -249,10 +244,10 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		super.onViewCreated(view, savedInstanceState);
 		
 		asyncJson("http://www.blognone.com/atom.xml");
-		asyncJson("http://www.thairath.co.th/rss/news.xml");
-		asyncJson("http://www.dailynews.co.th/rss.xml");
-		asyncJson("http://www.matichon.co.th/rss/news_article.xml");
-		asyncJson("http://www.manager.co.th/RSS/Game/Game.xml");
+		//asyncJson("http://www.thairath.co.th/rss/news.xml");
+		//asyncJson("http://www.dailynews.co.th/rss.xml");
+		//asyncJson("http://www.matichon.co.th/rss/news_article.xml");
+		//asyncJson("http://www.manager.co.th/RSS/Game/Game.xml");
 		asyncJson("http://www.komchadluek.net/rss/scienceit.xml");
 		
 		/*
@@ -260,89 +255,6 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		 * mCtx.fList.get(i); if (true) new
 		 * SynchronousHtmlFetch().execute(fdObj.url); }
 		 */
-	}
-	
-	public void picasaCb(String provider, XmlDom xml, AjaxStatus status)
-	{
-		
-		List<XmlDom> entries;
-		tempList = new SArrayList();
-		try
-		{
-			entries = xml.tags("item");
-		} catch (NullPointerException e)
-		{
-			e.printStackTrace();
-			return;
-		}
-		
-		for (XmlDom entry : entries)
-		{
-			
-			String titleStr = entry.text("title");
-			String link = entry.text("link");
-			String description = entry.text("description");
-			String pubDate = entry.text("pubDate");
-			String dcCreator = entry.text("dc:creator");
-			
-			// (TAG, "all content: " + entry.toString());
-			// for unicode link
-			link = StringEscapeUtils.unescapeJava(link);
-			description = StringEscapeUtils.unescapeJava(description);
-			
-			News n = new News(provider, link, titleStr, description, pubDate,
-					dcCreator);
-			n.imgUrl = descriptionParser(entry.toString());
-			// (TAG, "image link: " + n.imgUrl);
-			// time parser with my self
-			DateTime dt;
-			try
-			{
-				
-				int year = Integer.parseInt(pubDate.split(" ")[3]);
-				int month = monthTranslate(pubDate.split(" ")[2]);
-				int day = Integer.parseInt(pubDate.split(" ")[1]);
-				int hour = Integer
-						.parseInt(pubDate.split(" ")[4].split(":")[0]);
-				int min = Integer.parseInt(pubDate.split(" ")[4].split(":")[1]);
-				int sec = Integer.parseInt(pubDate.split(" ")[4].split(":")[2]);
-				dt = new DateTime(year, month, day, hour, min, sec, 0);
-				
-			} catch (Exception e)
-			{
-				dt = new DateTime();
-				// dt = Info.parseRfc822DateString(pubDate);
-				
-				// String dateString = "2010-03-01T00:00:00-08:00";
-				String dateString = pubDate;
-				String pattern = "yyyy-MM-dd'T'HH:mm:ssZ";
-				DateTimeFormatter dtf = DateTimeFormat.forPattern(pattern);
-				DateTime dateTime = dtf.parseDateTime(dateString);
-				
-				dt = dateTime;
-				
-			}
-			n.pubDate = getHumanLanguageTime(dt);
-			n.unixTime = dt.getMillis();
-			tempList.add(n);
-			mCtx.fList.add(n);
-			
-		}
-		
-		// if null image found try to search for content
-		// need 2 index for compare
-		if (tempList.size() >= 5)
-		{
-			String urlTemp1 = ((News) tempList.get(tempList.size() / 2)).link;
-			AjaxCallback<String> cb = new AjaxCallback<String>();
-			cb.url(urlTemp1).type(String.class);
-			aq.sync(cb);
-			// i(TAG, "fetching TEMPLATE1: " + urlTemp1);
-			String xmlResponseContent = cb.getResult();
-			AjaxStatus statusContent = cb.getStatus();
-			diffImageUrlFirst(urlTemp1, xmlResponseContent, statusContent);
-			
-		}
 	}
 	
 	public int monthTranslate(String monthString)
@@ -394,150 +306,10 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		FeedListViewAdapter ardap = new FeedListViewAdapter(getActivity(),
 				mCtx.newsList, aq);
 		lv.setAdapter(ardap);
-	}
-	
-	public void diffImageUrlFirst(String url, String html, AjaxStatus status)
-	{
-		try
-		{
-			imgUrlList1 = new ArrayList<String>();
-			String imgUrl1[] = html.split("<img");
-			// i(TAG, "template image1: " + imgUrl1.length);
-			
-			for (int i = 0; i < imgUrl1.length; i++)
-			{
-				
-				if (imgUrl1[i].split("src=\"").length >= 2)
-				{
-					String imgUrlReal = imgUrl1[i].split("src=\"")[1]
-							.split("\"")[0];
-					
-					if (imgUrlReal.indexOf(".js") == -1
-							&& imgUrlReal.indexOf("http:") != -1)
-					{
-						// i(TAG, "template image1" + imgUrlReal);
-						imgUrlList1.add(imgUrlReal);
-					}
-				}
-			}
-			// compare with next item
-			// sampling and middle news list link
-			String urlTemp1 = ((News) tempList.get((tempList.size() / 2) + 1)).link;
-			
-			AjaxCallback<String> cb = new AjaxCallback<String>();
-			cb.url(urlTemp1).type(String.class);
-			aq.sync(cb);
-			// i(TAG, "fetching TEMPLATE2: " + urlTemp1);
-			String xmlResponseContent = cb.getResult();
-			AjaxStatus statusContent = cb.getStatus();
-			diffImageUrlSecond(urlTemp1, xmlResponseContent, statusContent);
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		
-	}
-	
-	public void diffImageUrlSecond(String url, String html, AjaxStatus status)
-	{
-		ArrayList<String> imgUrlList2 = new ArrayList<String>();
-		
-		String imgUrl[] = html.split("<img");
-		// i(TAG, "template image2" + imgUrl.length);
-		
-		for (int i = 0; i < imgUrl.length; i++)
-		{
-			
-			if (imgUrl[i].split("src=\"").length >= 2)
-			{
-				String imgUrlReal = imgUrl[i].split("src=\"")[1].split("\"")[0];
-				if (imgUrlReal.indexOf(".js") == -1
-						&& imgUrlReal.indexOf("http:") != -1)
-				{
-					// i(TAG, "template image2" + imgUrlReal);
-					imgUrlList2.add(imgUrlReal);
-				}
-			}
-		}
-		for (int i = 0; i < imgUrlList1.size(); i++)
-		{
-			if (i < imgUrlList2.size())
-			{
-				// FOUND !!
-				if (!imgUrlList1.get(i).equals(imgUrlList2.get(i)))
-				{
-					imgLocationIdx = i;
-					break;
-				}
-				
-			} else
-			{
-				break;
-			}
-			
-		}
-	}
-	
-	public void callbackByLink(News newsObj, String html, AjaxStatus status)
-	{
-		// parser for that URL
-		String imgUrl[] = html.split("<img");
-		// i(TAG, "CALL BACK HTML SIZE: " + html.length());
-		// i(TAG, "CALL BACK BY IMAGE: " + imgUrl.length);
-		int indexFilter = 0;
-		boolean isFound = false;
-		for (int i = 0; i < imgUrl.length; i++)
-		{
-			if (imgUrl[i].split("src=\"").length >= 2)
-			{
-				
-				String imgUrlReal = imgUrl[i].split("src=\"")[1].split("\"")[0];
-				// i(TAG, "image: " + imgUrlReal);
-				if (imgUrlReal.indexOf(".js") == -1
-						&& imgUrlReal.indexOf("http:") != -1)
-				{
-					
-					if (indexFilter == imgLocationIdx)
-					{
-						// i(TAG, "real SETTING THIS IMAGE: " + imgUrlReal);
-						newsObj.imgUrl = imgUrlReal;
-						isFound = true;
-					}
-					++indexFilter;
-					
-				}
-			}
-		}
-		
-		// if don't find any image for some url select image that have longest
-		// name to show user
-		// this process below can remove it only use with MATICHON case
-		int maxLongest = 0;
-		
-		if (isFound == false)
-			for (int i = 0; i < imgUrl.length; i++)
-			{
-				
-				if (newsObj.imgUrl == null)
-					if (imgUrl[i].split("src=\"").length >= 2)
-					{
-						
-						String imgUrlReal = imgUrl[i].split("src=\"")[1]
-								.split("\"")[0];
-						// i(TAG, "image: " + imgUrlReal);
-						if (imgUrlReal.indexOf(".js") == -1
-								&& imgUrlReal.indexOf("http:") != -1)
-						{
-							if (imgUrlReal.length() > maxLongest)
-							{
-								maxLongest = imgUrlReal.length();
-								newsObj.imgUrl = imgUrlReal;
-							}
-							
-						}
-					}
-			}
-		
+		// setting unCountTv
+		TextView unReadTv = (TextView) mCtx.findViewById(R.id.unreadCountTv);
+		unReadTv.setVisibility(View.VISIBLE);
+		unReadTv.setText(countUnread() + "");
 	}
 	
 	public String descriptionParser(String description)
@@ -599,7 +371,6 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 			}
 		});
 		
-		// adapter.e
 		iv.setOnClickListener(new OnClickListener()
 		{
 			boolean scaleUp = false;
@@ -608,9 +379,13 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 			@Override
 			public void onClick(View v)
 			{
+				// final float scale =
+				// mCtx.getResources().getDisplayMetrics().density;
+				// int pixels = (int) (200 * scale + 0.5f);
+				
 				if (!scaleUp)
 				{
-					aq.id(iv).image(n.imgUrl, true, true);
+					// aq.id(iv).image(n.imgUrl, true, true);
 					
 					iv.getLayoutParams().height = LayoutParams.MATCH_PARENT;
 					iv.getLayoutParams().width = LayoutParams.MATCH_PARENT;
@@ -619,7 +394,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 					scaleUp = true;
 				} else if (scaleUp)
 				{
-					aq.id(iv).image(n.imgUrl, true, true, 200, 0);
+					// aq.id(iv).image(n.imgUrl, true, true, 200, 0);
 					iv.getLayoutParams().height = LayoutParams.WRAP_CONTENT;
 					iv.getLayoutParams().width = LayoutParams.WRAP_CONTENT;
 					iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
@@ -628,26 +403,29 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 			}
 		});
 		
-		News n = (News) this.lv.getItemAtPosition(arg2);
-		aq.id(iv).image(n.imgUrl, true, true, 200, 0);
-		currentShowOnDialogNew = n;// for share later
+		News newsObj = (News) arg1.getTag();
+		//i(TAG, "title: " + newsObj.title);
+		aq.id(iv).image(newsObj.imgUrl, true, true, 200, 0);
+		currentShowOnDialogNew = newsObj;// for share later
 		
 		// mark as read
 		ImageView isReadIv = (ImageView) arg1.findViewById(R.id.isReadIv);
 		isReadIv.setVisibility(View.GONE);
-		n.isRead = true;
-		// update unReadText
-		Info.getInstance().unReadCountTv.setText("0");
-		// hiding if it down to zero
+		newsObj.isRead = true;
+		// update badge
+		TextView unReadTv = (TextView) mCtx.findViewById(R.id.unreadCountTv);
+		unReadTv.setVisibility(View.VISIBLE);
+		unReadTv.setText(countUnread() + "");
 		
 		// WEBVIEW settings
 		String html = "" + "<html>" + "<head>"
 				+ "<style type='text/css'>a:link {color:#ff8c00;}" + "body {"
 				+ "font-family:serif;" + "color: #aaaaaa;"
 				+ "background-color: #222222 }" + "</style>" + "</head>"
-				+ "<body><h3>" + n.title + "</h3>\n" + n.description + "\n"
-				+ "<a href=\"" + n.link + "\">"
-				+ getString(R.string.continue_read_text) + "</body></html>";
+				+ "<body><h3>" + newsObj.title + "</h3>\n"
+				+ newsObj.description + "\n" + "<a href=\"" + newsObj.link
+				+ "\">" + getString(R.string.continue_read_text)
+				+ "</body></html>";
 		
 		WebView myWebView = (WebView) dialog.findViewById(R.id.webview);
 		WebSettings webSettings = myWebView.getSettings();
@@ -691,7 +469,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 	
 	public void asyncJson(String url)
 	{
-		Log.i(TAG, "request: " + url);
+		//i(TAG, "request: " + url);
 		aq.ajax(url, XmlDom.class, this, "xmlCallback");
 	}
 	
@@ -699,11 +477,9 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 	{
 		if (xml != null)
 		{
-			Log.i(TAG, "response: " + url);
+			//i(TAG, "response: " + url);
 			// successful ajax call
-			
 			List<XmlDom> entries;
-			tempList = new SArrayList();
 			try
 			{
 				entries = xml.tags("item");
@@ -770,13 +546,11 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 			}// end reading loop
 			
 			new AsyncHtmlFetch().execute(firstUrl + "," + secondUrl);
-			// finding image idx
-			// aq.ajax(url, XmlDom.class, this, "xmlCallback");
 			
 		} else
 		{
 			// ajax error
-			Log.e(TAG, "request timeout: " + url);
+			//e(TAG, "request timeout: " + url);
 		}
 	}
 	
@@ -788,10 +562,11 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		@Override
 		protected String doInBackground(String... uri)
 		{
-			Log.i(TAG, "start fetching image");
+			url = uri[0];
+			//i(TAG, "start fetching image");
 			int diffIdx = 0;
-			String firstUrl = uri[0].split(",")[0];
-			String secondUrl = uri[0].split(",")[1];
+			String firstUrl = url.split(",")[0];
+			String secondUrl = url.split(",")[1];
 			
 			String feederName = "NA";
 			try
@@ -803,13 +578,12 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 				cbA.url(firstUrl).type(String.class);
 				aq.sync(cbA);
 				String resultA = cbA.getResult();
-				AjaxStatus status1A = cbA.getStatus();
+				// AjaxStatus status1A = cbA.getStatus();
 				
 				resultA = resultA.replaceAll(".jpg\"", ".jpg.kak");
 				resultA = resultA.replaceAll(".png\"", ".png.kak");
 				resultA = resultA.replaceAll(".jpeg\"", ".jpeg.kak");
 				resultA = resultA.replaceAll(".JPEG\"", ".JPEG.kak");
-				
 				
 				String[] aSplit = resultA.split(".kak");
 				for (int i = 0; i < aSplit.length; i++)
@@ -822,7 +596,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 					// must have http:
 					if (imgUrlA.indexOf("http:") != -1)
 					{
-						Log.i(TAG,"Image1: "+imgUrlA);
+						//i(TAG, "Image1: " + imgUrlA);
 						aList.add(imgUrlA);
 					}
 				}
@@ -832,7 +606,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 				cbB.url(secondUrl).type(String.class);
 				aq.sync(cbB);
 				String resultB = cbB.getResult();
-				AjaxStatus status1B = cbB.getStatus();
+				// AjaxStatus status1B = cbB.getStatus();
 				
 				resultB = resultB.replaceAll(".jpg\"", ".jpg.kak");
 				resultB = resultB.replaceAll(".png\"", ".png.kak");
@@ -850,7 +624,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 					// must have http:
 					if (imgUrlB.indexOf("http:") != -1)
 					{
-						Log.i(TAG,"Image2: "+imgUrlB);
+						//i(TAG, "Image2: " + imgUrlB);
 						bList.add(imgUrlB);
 					}
 				}
@@ -874,14 +648,11 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 				for (int i = 0; i < mCtx.newsList.size(); i++)
 				{
 					News newsObjNoImg = (News) mCtx.newsList.get(i);
-					//if (
-					//		newsObjNoImg.link.split("[.]")[1] == feederName)
-					//{ 
-						String whoFeed = newsObjNoImg.link.split("[.]")[1];
+					String whoFeed = newsObjNoImg.link.split("[.]")[1];
 					
-						if(newsObjNoImg.imgUrl == null && whoFeed.equalsIgnoreCase(feederName))
+					if (newsObjNoImg.imgUrl == null
+							&& whoFeed.equalsIgnoreCase(feederName))
 						setImgUrl(newsObjNoImg.link, newsObjNoImg);
-					//}
 				}
 				
 			} catch (Exception e)
@@ -892,26 +663,26 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 			return feederName + "," + diffIdx + "";
 		}
 		
-		public void setImgUrl(String url,News newsObj){
+		public void setImgUrl(String url, News newsObj)
+		{
 			ArrayList<String> aList = new ArrayList<String>();
 			
 			String feederName = url.split("[.]")[1];
 			int imgIdxAt = imgIdxHM.get(feederName);
 			
-			
-			Log.i(TAG,"IMGIDX IS :"+imgIdxAt);
+			//i(TAG, "IMGIDX IS :" + imgIdxAt);
 			AjaxCallback<String> cbA = new AjaxCallback<String>();
 			cbA.url(url).type(String.class);
 			aq.sync(cbA);
-			String resultA = cbA.getResult();//.toLowerCase(Locale.getDefault());
-			AjaxStatus status1A = cbA.getStatus();
-			//tricky for split without remove s
+			String resultA = cbA.getResult();// .toLowerCase(Locale.getDefault());
+			// AjaxStatus status1A = cbA.getStatus();
+			// tricky for split without remove s
 			resultA = resultA.replaceAll(".jpg\"", ".jpg.kak");
 			resultA = resultA.replaceAll(".png\"", ".png.kak");
 			resultA = resultA.replaceAll(".jpeg\"", ".jpeg.kak");
 			resultA = resultA.replaceAll(".JPEG\"", ".JPEG.kak");
 			
-			String[] aSplit = resultA.split(".kak",-1);
+			String[] aSplit = resultA.split(".kak", -1);
 			for (int i = 0; i < aSplit.length; i++)
 			{
 				String imgUrl = aSplit[i];
@@ -922,102 +693,43 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 				// must have http:
 				if (imgUrlA.indexOf("http:") != -1)
 				{
-					Log.i(TAG,"ImageXXx: "+imgUrlA);
+					//i(TAG, "ImageXXx: " + imgUrlA);
 					aList.add(imgUrlA);
 				}
 			}
-			if(aList.size()>imgIdxAt){
+			if (aList.size() > imgIdxAt)
+			{
 				newsObj.imgUrl = aList.get(imgIdxAt);
-			}
-			else{
+			} else
+			{
 				newsObj.imgUrl = aList.get(0);
 			}
-			Log.i(TAG,"Settings image: "+aList.size()+","+newsObj.imgUrl);
-
+			//i(TAG, "Settings image: " + aList.size() + "," + newsObj.imgUrl);
 		}
 		
 		@Override
 		protected void onPostExecute(String result)
 		{
 			super.onPostExecute(result);
-			Log.i(TAG, "img index: " + result);
+			//i(TAG, "img index: " + result);
 			reloadView();
 		}
-		
-		
 		
 	}
 	
-	private class SynchronousHtmlFetch extends
-			AsyncTask<String, Integer, String>
+	public int countUnread()
 	{
-		private String TAG = getClass().getSimpleName();
-		private String url;
-		
-		@Override
-		protected String doInBackground(String... uri)
+		int unReadCount = 0;
+		for (int i = 0; i < mCtx.newsList.size(); i++)
 		{
-			// (TAG, "requesting: " + uri);
-			this.url = uri[0];
-			AjaxCallback<XmlDom> cb1 = new AjaxCallback<XmlDom>();
-			cb1.url(this.url).type(XmlDom.class);
-			// i(TAG, "Starting fetching");
-			aq.sync(cb1);
-			XmlDom xmlResponse1 = cb1.getResult();
-			AjaxStatus status1 = cb1.getStatus();
+			News newsObj = (News) mCtx.newsList.get(i);
 			
-			picasaCb(this.url, xmlResponse1, status1);
-			if (getActivity() != null)
-				getActivity().runOnUiThread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						reloadView();
-					}
-				});
-			// this.fetchContentSynchronous();
-			
-			return "ok";
-		}
-		
-		@Override
-		protected void onPostExecute(String result)
-		{
-			super.onPostExecute(result);
-			reloadView();
-			
-		}
-		
-		public void fetchContentSynchronous()
-		{
-			for (int i = 0; i < tempList.size(); i++)
+			if (!newsObj.isRead)
 			{
-				News newsObj = (News) tempList.get(i);
-				if (newsObj.imgUrl == null)
-				{
-					
-					AjaxCallback<String> cb = new AjaxCallback<String>();
-					cb.url(newsObj.link).type(String.class);
-					aq.sync(cb);
-					// i(TAG, "fetching content: " + tempList.get(i).link);
-					String xmlResponseContent = cb.getResult();
-					AjaxStatus statusContent = cb.getStatus();
-					
-					try
-					{
-						fileSize += xmlResponseContent.length();
-						callbackByLink(newsObj, xmlResponseContent,
-								statusContent);
-					} catch (NullPointerException e)
-					{
-						e.printStackTrace();
-					}
-				}
+				++unReadCount;
 			}
-			
 		}
-		
+		return unReadCount;
 	}
 	
 	@Override

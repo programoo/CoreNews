@@ -2,8 +2,6 @@ package object;
 
 import java.util.ArrayList;
 
-import android.util.Log;
-
 public class SArrayList extends ArrayList<SObject>
 {
 	private static final long serialVersionUID = 1L;

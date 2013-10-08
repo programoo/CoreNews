@@ -95,8 +95,6 @@ public class TabsAdapter extends FragmentPagerAdapter implements
 			ImageView icon = (ImageView) tabIndicator
 					.findViewById(R.id.normal_icon);
 			icon.setImageDrawable(drawableId);
-			Info.getInstance().unReadCountTv = (TextView) tabIndicator.findViewById(R.id.unreadCountTv);
-			
 		} else
 		{
 			tabIndicator = LayoutInflater.from(mContext)
