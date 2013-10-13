@@ -8,9 +8,9 @@ public class News extends SObject
 	public String description;
 	public String pubDate;
 	public String creator;
+	public String kind;
 	// update later
 	public String imgUrl = "undefined";
-	public long unixTime = 0;
 	public boolean isRead;
 	
 	public News(String provider, String link, String title, String description,
@@ -24,6 +24,7 @@ public class News extends SObject
 		this.creator = creator;
 		this.id = link;
 		isRead = false;
+		this.kind = "na";
 	}
 	
 }

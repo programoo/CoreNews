@@ -52,7 +52,6 @@ public class FeedListViewAdapter extends BaseAdapter implements OnClickListener
 			
 			convertView = inflater.inflate(R.layout.news_fragment_listview,
 					parent, false);
-			
 		}
 		
 		News newsObj = (News) this.newsList.get(position);
@@ -77,10 +76,14 @@ public class FeedListViewAdapter extends BaseAdapter implements OnClickListener
 		
 		TextView reporterText = (TextView) convertView
 				.findViewById(R.id.fromText);
-		String providerText = newsObj.provider.split("[.]")[1] + " "
-				+ newsObj.pubDate;
-		reporterText.setText(providerText);
-		
+		try{
+			String providerText = newsObj.provider.split("[.]")[1] + "("
+					+ newsObj.kind+") "+newsObj.pubDate;
+			reporterText.setText(providerText);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 		ImageView isReadIv = (ImageView) convertView
 				.findViewById(R.id.isReadIv);
 		

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">CoreNews</string>
+    <string name="app_name">ข่าวเช้านี้</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
 
@@ -14,17 +14,21 @@
     <string name="settings_title">ตั้งค่า</string>
     <string name="provider_selector_text">เลือกสำนักพิมพ์</string>
     <string name="typenews_selector_text">เลือกประเภทข่าว</string>
-    <string name="sport_text">กีฬา</string>
-    <string name="entertainment_text">บันเทิง</string>
     <string name="it_text">เทคโนโลยี</string>
-    <string name="economic_text">เศรษฐกิจ</string>
-    <string name="study_text">การศึกษา</string>
-    <string name="oversea_text">ต่างประเทศ</string>
-    <string name="lifestyle_text">ไลฟ์สไตล์</string>
-    <string name="other_text">ทั่วไป</string>
 
     <!-- thai translate -->
-
+    <string name="breaking_news_text">ข่าวใหมล่าสุด</string>
+    <string name="political_text">การเมือง</string>
+    <string name="entertainment_text">บันเทิง</string>
+    <string name="sport_text">กีฬา</string>
+    <string name="country_text">ข่าวในประเทศ</string>
+    <string name="oversea_text">ข่าวต่างประเทศ</string>
+    <string name="economic_text">เศรษฐกิจ หุ้น</string>
+    <string name="techonology_text">เทคโนโลยี</string>
+    <string name="science_text">วิทยาศาสตร์</string>
+    <string name="lifestyle_text">ไลฟ์สไตล์</string>
+    <string name="study_text">การศึกษา</string>
+    <string name="other_text">ทั่วไป</string>
     <string name="type_news_text">ประเภทของข่าว</string>
     <string name="provider_news_text">ที่มาของข่าว</string>
     <string name="addfeed_edt_hint_text">url ของผู้ให้บริการ rss</string>
@@ -39,7 +43,6 @@
     <string name="by_text">โดย</string>
     <string name="dailynews_text">เดลินิวส์</string>
     <string name="thairath_text">ไทยรัฐ</string>
-    <string name="political_text">ข่าวการเมือง</string>
     <string name="pass_day_text">วันที่แล้ว</string>
     <string name="pass_hour_text">ชั่วโมงที่แล้ว</string>
     <string name="pass_minute_text">นาทีที่แล้ว</string>

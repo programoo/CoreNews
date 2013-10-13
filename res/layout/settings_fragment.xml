@@ -10,43 +10,10 @@
         android:layout_height="wrap_content"
         android:text="@string/add_source_text" />
 
-    <RelativeLayout
-        android:id="@+id/addFeedLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/addNewsSourceTv"
-        android:layout_centerHorizontal="true" >
-
-        <Spinner
-            android:id="@+id/typeSelectSpn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <EditText
-            android:id="@+id/urlFeedEdt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/typeSelectSpn"
-            android:hint="@string/addfeed_edt_hint_text"
-            android:inputType="textUri" />
-
-        <ImageButton
-            android:id="@+id/addFeedImgBtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_toRightOf="@+id/urlFeedEdt"
-            android:background="@null"
-            android:contentDescription="@string/hello_world"
-            android:scaleType="fitCenter"
-            android:src="@drawable/plus_img" >
-        </ImageButton>
-    </RelativeLayout>
-
     <LinearLayout
         android:id="@+id/providerSelectorTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/addFeedLayout"
         android:baselineAligned="false" >
 
         <TextView

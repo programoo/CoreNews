@@ -42,8 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_below="@+id/newsText"
-        android:layout_toRightOf="@+id/newsIcon"
-        android:background="@drawable/signature_rounded_bg" >
+        android:layout_toRightOf="@+id/newsIcon" >
 
         <TextView
             android:id="@+id/fromText"
@@ -51,6 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:ellipsize="marquee"
+            android:textColor="@color/light_grey"
             android:maxLines="1"
             android:textSize="12sp"
             android:typeface="sans" />

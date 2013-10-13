@@ -2,6 +2,7 @@ package com.programoo.corenews;
 
 import object.Feeder;
 import object.SArrayList;
+import object.UFeeder;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,25 +10,28 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.programoo.snews.R;
 
-public class ProviderListViewAdapter extends BaseAdapter implements
+public class FeederListViewAdapter extends BaseAdapter implements
 		OnClickListener, OnCheckedChangeListener
 {
 	private String TAG = getClass().getSimpleName();
-	private Context context;
+	private MainActivity mCtx;
 	private SArrayList fList;
 	private LayoutInflater inflater = null;
 	
-	public ProviderListViewAdapter(Context context, SArrayList fList)
+	public FeederListViewAdapter(Context context, SArrayList fList)
 	{
 		super();
-		Log.i(TAG, "ProviderListViewAdapter");
-		this.context = context;
+		this.mCtx = (MainActivity) context;
 		this.fList = fList;
+		for(int i=0;i<this.fList.size();++i){
+			Log.i(TAG,this.fList.get(i).toString());
+		}
 	}
 	
 	@Override
@@ -35,19 +39,21 @@ public class ProviderListViewAdapter extends BaseAdapter implements
 	{
 		if (convertView == null)
 		{
-			this.inflater = (LayoutInflater) context
+			this.inflater = (LayoutInflater) mCtx
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			
 			convertView = inflater.inflate(R.layout.provider_listview, parent,
 					false);
+			
 		}
-		/*
-		 * CheckBox cb = (CheckBox) convertView.findViewById(R.id.providerCb);
-		 * //Feeder fdObj = (Feeder) this.fList.get(position); //
-		 * /Log.i(TAG,"fdObj: "+position+"<>"+fdObj.toString());
-		 * cb.setOnCheckedChangeListener(this); cb.setTag(fdObj);
-		 * cb.setText(fdObj.value); if(fdObj.isSelected){ cb.setChecked(true); }
-		 */
+		
+		UFeeder fdObj = (UFeeder) this.fList.get(position) ;
+		CheckBox cb = (CheckBox) convertView.findViewById(R.id.providerCb);
+		cb.setText(fdObj.name);
+		cb.setTag(fdObj);
+		cb.setChecked(fdObj.isSelected);
+		cb.setOnCheckedChangeListener(this);
+		
 		return convertView;
 	}
 	
@@ -78,9 +84,8 @@ public class ProviderListViewAdapter extends BaseAdapter implements
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
 	{
-		Feeder fd = (Feeder) buttonView.getTag();
-		fd.isSelected = isChecked;
-		// Log.i(TAG,"change: "+isChecked+","+buttonView.getTag());
+		UFeeder fdObj = (UFeeder) buttonView.getTag();
+		fdObj.isSelected = isChecked;
 	}
 	
 }

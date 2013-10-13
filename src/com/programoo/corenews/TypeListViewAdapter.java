@@ -1,7 +1,8 @@
 package com.programoo.corenews;
 
-import java.util.ArrayList;
-
+import object.Kind;
+import object.SArrayList;
+import object.SObject;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,17 +11,19 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.programoo.snews.R;
 
-public class TypeListViewAdapter extends BaseAdapter implements OnClickListener
+public class TypeListViewAdapter extends BaseAdapter implements OnClickListener, OnCheckedChangeListener
 {
 	private String TAG = getClass().getSimpleName();
 	private Context context;
-	private ArrayList<String> typeList;
+	private SArrayList typeList;
 	private LayoutInflater inflater = null;
 	
-	public TypeListViewAdapter(Context context, ArrayList<String> typeList)
+	public TypeListViewAdapter(Context context, SArrayList typeList)
 	{
 		super();
 		Log.i(TAG, "ProviderListViewAdapter");
@@ -40,9 +43,13 @@ public class TypeListViewAdapter extends BaseAdapter implements OnClickListener
 					false);
 			
 		}
+		Kind typeObj = (Kind) this.typeList.get(position);
 		
 		CheckBox cb = (CheckBox) convertView.findViewById(R.id.providerCb);
-		cb.setText(this.typeList.get(position));
+		cb.setText(typeObj.type);
+		cb.setTag(typeObj);
+		cb.setChecked(typeObj.isSelected);
+		cb.setOnCheckedChangeListener(this);
 		
 		return convertView;
 		
@@ -55,7 +62,7 @@ public class TypeListViewAdapter extends BaseAdapter implements OnClickListener
 	}
 	
 	@Override
-	public String getItem(int position)
+	public SObject getItem(int position)
 	{
 		return this.typeList.get(position);
 	}
@@ -69,6 +76,13 @@ public class TypeListViewAdapter extends BaseAdapter implements OnClickListener
 	@Override
 	public void onClick(View v)
 	{
+	}
+
+	@Override
+	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+	{
+		Kind kindObj = (Kind) buttonView.getTag();
+		kindObj.isSelected = isChecked;
 	}
 	
 }

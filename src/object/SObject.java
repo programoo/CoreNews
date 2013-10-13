@@ -5,7 +5,7 @@ public class SObject
 {
 	public String id;
 	public String value;
-	public int priority;
+	public long priority;
 	public SObject()
 	{
 		this.id = "0";
@@ -28,7 +28,7 @@ public class SObject
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof SObject && ((SObject) obj).id.equals(this.id) ;
+		return ((SObject) obj).id.equals(this.id) ;
 	}
 	
 }

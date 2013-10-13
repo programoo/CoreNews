@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import object.Feeder;
+import object.Kind;
 import object.News;
 import object.SArrayList;
+import object.UFeeder;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.brickred.socialauth.android.DialogListener;
@@ -75,8 +78,12 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		// share objectClass
+		
 		aq = new AQuery(getActivity());
 		mCtx = (MainActivity) getActivity();
+		mCtx.feedFragObj = this;
+		
 		imgIdxHM = new HashMap<String, Integer>();
 		
 		// share button settings
@@ -242,19 +249,25 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 	public void onViewCreated(View view, Bundle savedInstanceState)
 	{
 		super.onViewCreated(view, savedInstanceState);
-		
-		asyncJson("http://www.blognone.com/atom.xml");
-		//asyncJson("http://www.thairath.co.th/rss/news.xml");
-		//asyncJson("http://www.dailynews.co.th/rss.xml");
-		//asyncJson("http://www.matichon.co.th/rss/news_article.xml");
-		//asyncJson("http://www.manager.co.th/RSS/Game/Game.xml");
-		asyncJson("http://www.komchadluek.net/rss/scienceit.xml");
-		
-		/*
-		 * for (int i = 0; i < mCtx.fList.size(); i++) { Feeder fdObj = (Feeder)
-		 * mCtx.fList.get(i); if (true) new
-		 * SynchronousHtmlFetch().execute(fdObj.url); }
-		 */
+		startAsynFetching();
+	}
+	
+	
+	public void startAsynFetching(){
+		for (int i = 0; i < mCtx.fList.size(); i++)
+		{
+			Feeder fdObj = (Feeder) mCtx.fList.get(i);
+			// filter
+			for(int j=0;j<mCtx.uFeederList.size();j++){
+				
+				UFeeder uFdObj = (UFeeder) mCtx.uFeederList.get(j);
+				
+				if(fdObj.url.indexOf(uFdObj.name) != -1 && uFdObj.isSelected ){
+					asyncJson(fdObj.url);
+				}
+			}
+			
+		}
 	}
 	
 	public int monthTranslate(String monthString)
@@ -303,13 +316,41 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 	
 	public void reloadView()
 	{
+		// read only filter list
+		mCtx.filterNewsList = new SArrayList();
+		
+		for (int i = 0; i < mCtx.newsList.size(); ++i)
+		{
+			News newsObj = (News) mCtx.newsList.get(i);
+			
+			for (int j = 0; j < mCtx.uFeederList.size(); j++)
+			{
+				UFeeder fdObj = (UFeeder) mCtx.uFeederList.get(j);
+				
+				for (int k = 0; k < mCtx.typeList.size(); k++)
+				{
+					
+					Kind kindObj = (Kind) mCtx.typeList.get(k);
+					
+					if (kindObj.isSelected
+							&& kindObj.type.equalsIgnoreCase(newsObj.kind)
+							&& fdObj.isSelected
+							&& newsObj.link.indexOf(fdObj.name) != -1)
+					{
+						mCtx.filterNewsList.add(newsObj);
+					}
+				}
+			}
+			
+		}
+		
+		mCtx.filterNewsList.sortByPriority();
 		FeedListViewAdapter ardap = new FeedListViewAdapter(getActivity(),
-				mCtx.newsList, aq);
+				mCtx.filterNewsList, aq);
 		lv.setAdapter(ardap);
+		countUnread();
 		// setting unCountTv
-		TextView unReadTv = (TextView) mCtx.findViewById(R.id.unreadCountTv);
-		unReadTv.setVisibility(View.VISIBLE);
-		unReadTv.setText(countUnread() + "");
+		
 	}
 	
 	public String descriptionParser(String description)
@@ -321,7 +362,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 			String imgUrl = description.split(".jpg\"")[0];
 			int lastIdx = imgUrl.lastIndexOf("\"") + 1;
 			result = imgUrl.substring(lastIdx) + ".jpg";
-			
+			Log.i(TAG, "imgUrl: " + result);
 			return result;
 		}
 		
@@ -331,12 +372,16 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 	@Override
 	public void onStart()
 	{
+		Log.i(TAG, "onStart");
+		reloadView();
 		super.onStart();
 	}
 	
 	@Override
 	public void onPause()
 	{
+		Log.i(TAG, "onPause");
+		
 		super.onPause();
 	}
 	
@@ -380,8 +425,8 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 			public void onClick(View v)
 			{
 				// final float scale =
-				// mCtx.getResources().getDisplayMetrics().density;
-				// int pixels = (int) (200 * scale + 0.5f);
+				double scale = mCtx.getResources().getDisplayMetrics().density;
+				int pixels = (int) (100 * scale + 0.5f);
 				
 				if (!scaleUp)
 				{
@@ -395,16 +440,16 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 				} else if (scaleUp)
 				{
 					// aq.id(iv).image(n.imgUrl, true, true, 200, 0);
-					iv.getLayoutParams().height = LayoutParams.WRAP_CONTENT;
-					iv.getLayoutParams().width = LayoutParams.WRAP_CONTENT;
-					iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+					iv.getLayoutParams().height = pixels;
+					iv.getLayoutParams().width = pixels;
+					iv.setScaleType(ImageView.ScaleType.FIT_START);
 					scaleUp = false;
 				}
 			}
 		});
 		
 		News newsObj = (News) arg1.getTag();
-		//i(TAG, "title: " + newsObj.title);
+		// i(TAG, "title: " + newsObj.title);
 		aq.id(iv).image(newsObj.imgUrl, true, true, 200, 0);
 		currentShowOnDialogNew = newsObj;// for share later
 		
@@ -413,9 +458,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		isReadIv.setVisibility(View.GONE);
 		newsObj.isRead = true;
 		// update badge
-		TextView unReadTv = (TextView) mCtx.findViewById(R.id.unreadCountTv);
-		unReadTv.setVisibility(View.VISIBLE);
-		unReadTv.setText(countUnread() + "");
+		countUnread();
 		
 		// WEBVIEW settings
 		String html = "" + "<html>" + "<head>"
@@ -469,7 +512,6 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 	
 	public void asyncJson(String url)
 	{
-		//i(TAG, "request: " + url);
 		aq.ajax(url, XmlDom.class, this, "xmlCallback");
 	}
 	
@@ -477,7 +519,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 	{
 		if (xml != null)
 		{
-			//i(TAG, "response: " + url);
+			Log.i(TAG, "response: " + url);
 			// successful ajax call
 			List<XmlDom> entries;
 			try
@@ -527,15 +569,19 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 				{
 					dt = new DateTime();
 					String dateString = pubDate;
-					String pattern = "yyyy-MM-dd'T'HH:mm:ssZ";
-					DateTimeFormatter dtf = DateTimeFormat.forPattern(pattern);
-					DateTime dateTime = dtf.parseDateTime(dateString);
+					//String pattern = "yyyy-MM-dd HH:mm:ssZ";
+					//String pattern = "yyyy-MM-dd HH.mm.ss aa";
 					
-					dt = dateTime;
+					//DateTimeFormatter dtf = DateTimeFormat.forPattern(pattern);
+					//DateTime dateTime = dtf.parseDateTime(dateString);
+					
+					//dt = dateTime;
 					
 				}
 				n.pubDate = getHumanLanguageTime(dt);
-				n.unixTime = dt.getMillis();
+				n.priority = dt.getMillis();
+				n.kind = ((Feeder) mCtx.fList.getObjByValue(url)).kind;
+				
 				mCtx.newsList.add(n);
 				
 				index++;
@@ -550,7 +596,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		} else
 		{
 			// ajax error
-			//e(TAG, "request timeout: " + url);
+			// e(TAG, "request timeout: " + url);
 		}
 	}
 	
@@ -563,7 +609,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		protected String doInBackground(String... uri)
 		{
 			url = uri[0];
-			//i(TAG, "start fetching image");
+			// i(TAG, "start fetching image");
 			int diffIdx = 0;
 			String firstUrl = url.split(",")[0];
 			String secondUrl = url.split(",")[1];
@@ -596,7 +642,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 					// must have http:
 					if (imgUrlA.indexOf("http:") != -1)
 					{
-						//i(TAG, "Image1: " + imgUrlA);
+						// i(TAG, "Image1: " + imgUrlA);
 						aList.add(imgUrlA);
 					}
 				}
@@ -624,7 +670,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 					// must have http:
 					if (imgUrlB.indexOf("http:") != -1)
 					{
-						//i(TAG, "Image2: " + imgUrlB);
+						// i(TAG, "Image2: " + imgUrlB);
 						bList.add(imgUrlB);
 					}
 				}
@@ -670,7 +716,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 			String feederName = url.split("[.]")[1];
 			int imgIdxAt = imgIdxHM.get(feederName);
 			
-			//i(TAG, "IMGIDX IS :" + imgIdxAt);
+			// i(TAG, "IMGIDX IS :" + imgIdxAt);
 			AjaxCallback<String> cbA = new AjaxCallback<String>();
 			cbA.url(url).type(String.class);
 			aq.sync(cbA);
@@ -693,7 +739,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 				// must have http:
 				if (imgUrlA.indexOf("http:") != -1)
 				{
-					//i(TAG, "ImageXXx: " + imgUrlA);
+					// i(TAG, "ImageXXx: " + imgUrlA);
 					aList.add(imgUrlA);
 				}
 			}
@@ -704,15 +750,14 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 			{
 				newsObj.imgUrl = aList.get(0);
 			}
-			//i(TAG, "Settings image: " + aList.size() + "," + newsObj.imgUrl);
+			Log.i(TAG, "Settings image: " + aList.size() + "," + newsObj.imgUrl);
+			// i(TAG, "Settings image: " + aList.size() + "," + newsObj.imgUrl);
 		}
 		
 		@Override
 		protected void onPostExecute(String result)
 		{
 			super.onPostExecute(result);
-			//i(TAG, "img index: " + result);
-			reloadView();
 		}
 		
 	}
@@ -720,14 +765,25 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 	public int countUnread()
 	{
 		int unReadCount = 0;
-		for (int i = 0; i < mCtx.newsList.size(); i++)
+		for (int i = 0; i < mCtx.filterNewsList.size(); i++)
 		{
-			News newsObj = (News) mCtx.newsList.get(i);
+			News newsObj = (News) mCtx.filterNewsList.get(i);
 			
 			if (!newsObj.isRead)
 			{
 				++unReadCount;
 			}
+		}
+		
+		TextView unReadTv = (TextView) mCtx.findViewById(R.id.unreadCountTv);
+		unReadTv.setVisibility(View.VISIBLE);
+		
+		if (unReadCount > 0)
+		{
+			unReadTv.setText(unReadCount + "");
+		} else
+		{
+			unReadTv.setVisibility(View.GONE);
 		}
 		return unReadCount;
 	}

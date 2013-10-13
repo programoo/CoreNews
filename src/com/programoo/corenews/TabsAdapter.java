@@ -28,6 +28,8 @@ public class TabsAdapter extends FragmentPagerAdapter implements
 	private final Context mContext;
 	private final TabHost mTabHost;
 	private final ViewPager mViewPager;
+	private MainActivity mCtx;
+
 	private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
 	
 	static final class TabInfo
@@ -75,6 +77,7 @@ public class TabsAdapter extends FragmentPagerAdapter implements
 		mViewPager.setAdapter(this);
 		mViewPager.setOnPageChangeListener(this);
 		mViewPager.setOnTouchListener(this);
+		mCtx = (MainActivity) mContext;
 		
 	}
 	
@@ -89,9 +92,8 @@ public class TabsAdapter extends FragmentPagerAdapter implements
 		View tabIndicator = null;
 		if (label.equalsIgnoreCase(mContext.getString(R.string.news_text)))
 		{
-			tabIndicator = LayoutInflater.from(mContext)
-					.inflate(R.layout.badge_tabbar_view,
-							mTabHost.getTabWidget(), false);
+			tabIndicator = LayoutInflater.from(mContext).inflate(
+					R.layout.badge_tabbar_view, mTabHost.getTabWidget(), false);
 			ImageView icon = (ImageView) tabIndicator
 					.findViewById(R.id.normal_icon);
 			icon.setImageDrawable(drawableId);
@@ -139,6 +141,14 @@ public class TabsAdapter extends FragmentPagerAdapter implements
 		mViewPager.setCurrentItem(position);
 		notifyDataSetChanged();
 		Log.d(tag, "ontabChanged: " + tabId);
+		// after tabhostchange reload child-view
+		MainActivity mCtx = (MainActivity) mContext;
+		if (mCtx.feedFragObj != null){
+			mCtx.feedFragObj.reloadView();
+			Log.i("kak","Reload view");
+		}
+		
+		//alert text if not setting yet
 		
 	}
 	
@@ -151,7 +161,7 @@ public class TabsAdapter extends FragmentPagerAdapter implements
 	{
 		mTabHost.setCurrentTab(position);
 		Log.d(tag, "page change: " + position);
-				
+		
 	}
 	
 	public void onPageScrollStateChanged(int state)
@@ -171,6 +181,9 @@ public class TabsAdapter extends FragmentPagerAdapter implements
 	public boolean onTouch(View v, MotionEvent event)
 	{
 		// TODO Auto-generated method stub
+		if (mCtx.feedFragObj != null){
+			mCtx.feedFragObj.reloadView();
+		}
 		return true;
 	}
 }

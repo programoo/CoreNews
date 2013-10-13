@@ -40,13 +40,15 @@ public class SettingFragment extends Fragment implements OnItemSelectedListener
 		providerLv = (ListView) this.layout.findViewById(R.id.providerLv);
 		typeLv = (ListView) this.layout.findViewById(R.id.typeLv);
 		
-		ProviderListViewAdapter pAdapter = new ProviderListViewAdapter(
-				getActivity(), mCtx.fList);
-		providerLv.setAdapter(pAdapter);
 		
 		TypeListViewAdapter p2Adapter = new TypeListViewAdapter(getActivity(),
-				Info.getInstance().typeList);
+				mCtx.typeList);
 		typeLv.setAdapter(p2Adapter);
+		
+		FeederListViewAdapter pAdapter = new FeederListViewAdapter(
+				getActivity(), mCtx.uFeederList);
+		providerLv.setAdapter(pAdapter);
+		
 		
 		return layout;
 	}

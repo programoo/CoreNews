@@ -34,7 +34,7 @@
         android:background="@drawable/circle"
         android:padding="3dp"
         android:visibility="gone"
-        android:textColor="@color/red"
+        android:textColor="@color/white"
         android:textSize="12sp"
         android:textStyle="bold" />
 

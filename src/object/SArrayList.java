@@ -8,7 +8,7 @@ public class SArrayList extends ArrayList<SObject>
 
 	public SArrayList()
 	{
-		
+		 
 	}
 	
 	public void sortByPriority()
@@ -18,11 +18,10 @@ public class SArrayList extends ArrayList<SObject>
 			for(int j=0;j<size()-1;j++){
 				SObject objA = get(j);
 				SObject objB = get(j+1);
-				
 				if (objB.priority > objA.priority)
 				{
-					set(j + 1, objA);
 					set(j, objB);
+					set(j + 1, objA);
 				}
 			}
 		}
@@ -48,6 +47,15 @@ public class SArrayList extends ArrayList<SObject>
 			}
 		}
 		return false;
+	}
+	
+	public SObject getObjByValue(String value){
+		for(int i=0;i<size();i++){
+			if(get(i).value.equalsIgnoreCase(value)){
+				return get(i);
+			}
+		}
+		return null;
 	}
 	
 }
