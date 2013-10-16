@@ -35,8 +35,6 @@ public class FeedListViewAdapter extends BaseAdapter implements OnClickListener
 		this.context = context;
 		this.newsList = newsList;
 		this.aq = aq;
-		Log.d(TAG, "FeedListViewAdapter");
-		
 	}
 	
 	@Override
@@ -122,7 +120,6 @@ public class FeedListViewAdapter extends BaseAdapter implements OnClickListener
 	{
 		News newsMention = (News) v.getTag();
 		
-		Log.i(TAG, "onClick: " + newsMention.toString());
 		final Dialog dialog = new Dialog(this.context);
 		dialog.getWindow();
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

@@ -10,13 +10,14 @@
     <string name="settings_text">ตั้งค่า</string>
 
     <!-- settings tab -->
-    <string name="add_source_text">เพิ่มแหล่งข่าว</string>
+    <string name="add_source_text">เมื่อตั้งค่าเสร็จแล้วให้ปิดและเปิดแอปใหม่</string>
     <string name="settings_title">ตั้งค่า</string>
     <string name="provider_selector_text">เลือกสำนักพิมพ์</string>
     <string name="typenews_selector_text">เลือกประเภทข่าว</string>
     <string name="it_text">เทคโนโลยี</string>
 
     <!-- thai translate -->
+    <string name="splash_screen_text">ข่าวเช้านี้ ที่ประเทศไทย</string>
     <string name="breaking_news_text">ข่าวใหมล่าสุด</string>
     <string name="political_text">การเมือง</string>
     <string name="entertainment_text">บันเทิง</string>
@@ -24,7 +25,7 @@
     <string name="country_text">ข่าวในประเทศ</string>
     <string name="oversea_text">ข่าวต่างประเทศ</string>
     <string name="economic_text">เศรษฐกิจ หุ้น</string>
-    <string name="techonology_text">เทคโนโลยี</string>
+    <string name="techonology_text">เทคโนโลยี เกมส์</string>
     <string name="science_text">วิทยาศาสตร์</string>
     <string name="lifestyle_text">ไลฟ์สไตล์</string>
     <string name="study_text">การศึกษา</string>

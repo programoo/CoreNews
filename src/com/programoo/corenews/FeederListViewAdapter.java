@@ -29,9 +29,6 @@ public class FeederListViewAdapter extends BaseAdapter implements
 		super();
 		this.mCtx = (MainActivity) context;
 		this.fList = fList;
-		for(int i=0;i<this.fList.size();++i){
-			Log.i(TAG,this.fList.get(i).toString());
-		}
 	}
 	
 	@Override

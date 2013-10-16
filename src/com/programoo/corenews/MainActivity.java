@@ -9,10 +9,13 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TabHost;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.programoo.snews.R;
 
 public class MainActivity extends FragmentActivity
@@ -26,6 +29,8 @@ public class MainActivity extends FragmentActivity
 	public SArrayList typeList;
 	public SArrayList uFeederList;
 	public FeedFragment feedFragObj;
+	private ImageView splashScreen;
+	private MainActivity mCtx;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -35,11 +40,43 @@ public class MainActivity extends FragmentActivity
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		
 		setContentView(R.layout.activity_main);
 		
+		mCtx = this;
 		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
+		mTabHost = (TabHost) findViewById(R.id.tabhostMain);
+		splashScreen = (ImageView) findViewById(R.id.splashScreenIv);
+		
+		new Thread(new Runnable()
+		{
+			public void run()
+			{
+				try
+				{
+					Thread.sleep(5000);
+					
+					mCtx.runOnUiThread(new Runnable()
+					{
+						public void run()
+						{
+							try
+							{
+								splashScreen.setVisibility(View.GONE);
+								mTabHost.setVisibility(View.VISIBLE);
+							} catch (Exception e)
+							{
+								
+							}
+						}
+					});
+					
+				} catch (InterruptedException e)
+				{
+				}
+				
+			}
+		}).start();
+		
 		mTabHost.setup();
 		
 		TabsAdapter mTabsAdapter = new TabsAdapter(this, mTabHost, mViewPager);
@@ -70,6 +107,7 @@ public class MainActivity extends FragmentActivity
 	protected void onStart()
 	{
 		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);  // Add this method.
 	}
 	
 	@Override
@@ -77,7 +115,8 @@ public class MainActivity extends FragmentActivity
 	{
 		Log.i(TAG, "onDestroy");
 		
-		Info.serializeFromArrayList(this, "News.csv", newsList, News.class);
+		Info.serializeFromArrayList(this, "News.csv", filterNewsList,
+				News.class);
 		Info.serializeFromArrayList(this, "UFeeder.csv", uFeederList,
 				UFeeder.class);
 		Info.serializeFromArrayList(this, "Type.csv", typeList, Kind.class);
@@ -95,6 +134,7 @@ public class MainActivity extends FragmentActivity
 	protected void onStop()
 	{
 		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
 	}
 	
 	public void addFeeder()
@@ -518,12 +558,13 @@ public class MainActivity extends FragmentActivity
 		{
 			Feeder fdObj = (Feeder) this.fList.get(i);
 			typeList.add(new Kind(fdObj.kind, true));
+			
 		}
 		// regenerate typeList from feeder
 		for (int i = 0; i < this.fList.size(); i++)
 		{
 			Feeder fdObj = (Feeder) this.fList.get(i);
-			if (i == 0)
+			if (fdObj.name.equalsIgnoreCase("thairath"))
 			{
 				uFeederList.add(new UFeeder(fdObj.name, true));
 			} else

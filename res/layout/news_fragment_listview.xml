@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/newsIcon"
         android:singleLine="true"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:typeface="sans" />
 
     <RelativeLayout

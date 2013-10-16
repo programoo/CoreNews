@@ -97,7 +97,6 @@ public class Info
 			while ((temp = bufferedReader.readLine()) != null)
 			{
 				fileToAl.add(temp);
-				Log.i("Info", "read from read: " + temp);
 			}
 			bufferedReader.close();
 			
@@ -150,7 +149,6 @@ public class Info
 			Gson gson = new Gson();
 			while ((temp = bufferedReader.readLine()) != null)
 			{
-				Log.i("Info", "read from read: " + temp);
 				SObject genericObj = (SObject) gson.fromJson(temp, classType);
 				// unique add prevent some bug in future
 				al.add(genericObj);

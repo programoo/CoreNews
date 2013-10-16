@@ -25,15 +25,12 @@ public class SettingFragment extends Fragment implements OnItemSelectedListener
 	{
 		super.onCreate(savedInstanceState);
 		// read settings
-		Log.i(TAG, "onCreate");
 		mCtx = (MainActivity) getActivity();
 	}
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState)
 	{
-		
-		Log.i(TAG, "onCreateView");
 		
 		this.layout = inflater.inflate(R.layout.settings_fragment, container,
 				false);
@@ -49,7 +46,6 @@ public class SettingFragment extends Fragment implements OnItemSelectedListener
 				getActivity(), mCtx.uFeederList);
 		providerLv.setAdapter(pAdapter);
 		
-		
 		return layout;
 	}
 	
@@ -57,21 +53,18 @@ public class SettingFragment extends Fragment implements OnItemSelectedListener
 	public void onStop()
 	{
 		super.onStop();
-		Log.d(TAG, "on stop");
 	}
 	
 	@Override
 	public void onStart()
 	{
 		super.onStart();
-		Log.d(TAG, "on start");
 	}
 	
 	@Override
 	public void onPause()
 	{
 		super.onPause();
-		Log.d(TAG, "on pause");
 		
 	}
 	
@@ -79,7 +72,6 @@ public class SettingFragment extends Fragment implements OnItemSelectedListener
 			long id)
 	{
 		String itemSelect = (String) parent.getItemAtPosition(pos);
-		Log.i(TAG, "You select: " + itemSelect);
 	}
 	
 	public void onNothingSelected(AdapterView<?> parent)

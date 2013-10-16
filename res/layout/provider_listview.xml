@@ -6,6 +6,7 @@
 
 	<CheckBox android:id="@+id/providerCb"
 	    android:layout_width="wrap_content"
+	    android:textColor="@color/light_grey"
 	    android:layout_height="wrap_content"/>
 
 </RelativeLayout>

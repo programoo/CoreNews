@@ -181,7 +181,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 					+ currentShowOnDialogNew.link
 					+ "\n"
 					+ getString(R.string.credit_text)
-					+ ": https://play.google.com/store/apps/details?id=com.prakarn.loopwalker";
+					+ ": https://play.google.com/store/search?q=prakarn%20wongsanit&c=apps&hl=th";
 			try
 			{
 				Bitmap preset = aq
@@ -202,7 +202,6 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		protected void onPostExecute(String result)
 		{
 			super.onPostExecute(result);
-			// d(TAG, "image posted complete");
 			Toast.makeText(getActivity(), "Message posted complete ",
 					Toast.LENGTH_LONG).show();
 		}
@@ -240,7 +239,6 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		lv = (ListView) newsFragment.findViewById(R.id.list1Fragment);
 		ardap = new FeedListViewAdapter(getActivity(), mCtx.newsList, aq);
 		lv.setAdapter(ardap);
-		// d(TAG, "onCreateView");
 		lv.setOnItemClickListener(this);
 		return newsFragment;
 	}
@@ -252,19 +250,32 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		startAsynFetching();
 	}
 	
-	
-	public void startAsynFetching(){
+	public void startAsynFetching()
+	{
 		for (int i = 0; i < mCtx.fList.size(); i++)
 		{
 			Feeder fdObj = (Feeder) mCtx.fList.get(i);
 			// filter
-			for(int j=0;j<mCtx.uFeederList.size();j++){
+			for (int j = 0; j < mCtx.uFeederList.size(); j++)
+			{
 				
 				UFeeder uFdObj = (UFeeder) mCtx.uFeederList.get(j);
 				
-				if(fdObj.url.indexOf(uFdObj.name) != -1 && uFdObj.isSelected ){
-					asyncJson(fdObj.url);
+				for (int k = 0; k < mCtx.typeList.size(); k++)
+				{
+					
+					Kind kindObj = (Kind) mCtx.typeList.get(k);
+					
+					if (kindObj.isSelected
+							&& kindObj.type.equalsIgnoreCase(fdObj.kind)
+							&& uFdObj.isSelected
+							&& uFdObj.name.indexOf(fdObj.name) != -1)
+					{
+						asyncJson(fdObj.url);
+						Log.i(TAG,"request: "+fdObj.url);
+					}
 				}
+				
 			}
 			
 		}
@@ -362,7 +373,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 			String imgUrl = description.split(".jpg\"")[0];
 			int lastIdx = imgUrl.lastIndexOf("\"") + 1;
 			result = imgUrl.substring(lastIdx) + ".jpg";
-			Log.i(TAG, "imgUrl: " + result);
+			// (TAG, "imgUrl: " + result);
 			return result;
 		}
 		
@@ -372,7 +383,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 	@Override
 	public void onStart()
 	{
-		Log.i(TAG, "onStart");
+		// (TAG, "onStart");
 		reloadView();
 		super.onStart();
 	}
@@ -380,7 +391,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 	@Override
 	public void onPause()
 	{
-		Log.i(TAG, "onPause");
+		// (TAG, "onPause");
 		
 		super.onPause();
 	}
@@ -519,7 +530,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 	{
 		if (xml != null)
 		{
-			Log.i(TAG, "response: " + url);
+			// (TAG, "response: " + url);
 			// successful ajax call
 			List<XmlDom> entries;
 			try
@@ -569,13 +580,14 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 				{
 					dt = new DateTime();
 					String dateString = pubDate;
-					//String pattern = "yyyy-MM-dd HH:mm:ssZ";
-					//String pattern = "yyyy-MM-dd HH.mm.ss aa";
+					// String pattern = "yyyy-MM-dd HH:mm:ssZ";
+					// String pattern = "yyyy-MM-dd HH.mm.ss aa";
 					
-					//DateTimeFormatter dtf = DateTimeFormat.forPattern(pattern);
-					//DateTime dateTime = dtf.parseDateTime(dateString);
+					// DateTimeFormatter dtf =
+					// DateTimeFormat.forPattern(pattern);
+					// DateTime dateTime = dtf.parseDateTime(dateString);
 					
-					//dt = dateTime;
+					// dt = dateTime;
 					
 				}
 				n.pubDate = getHumanLanguageTime(dt);
@@ -590,6 +602,10 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 				if (index == 2)
 					secondUrl = n.link;
 			}// end reading loop
+			
+			reloadView();
+			//reloadview
+			
 			
 			new AsyncHtmlFetch().execute(firstUrl + "," + secondUrl);
 			
@@ -750,7 +766,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 			{
 				newsObj.imgUrl = aList.get(0);
 			}
-			Log.i(TAG, "Settings image: " + aList.size() + "," + newsObj.imgUrl);
+			// (TAG, "Settings image: " + aList.size() + "," + newsObj.imgUrl);
 			// i(TAG, "Settings image: " + aList.size() + "," + newsObj.imgUrl);
 		}
 		

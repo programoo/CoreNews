@@ -26,7 +26,6 @@ public class TypeListViewAdapter extends BaseAdapter implements OnClickListener,
 	public TypeListViewAdapter(Context context, SArrayList typeList)
 	{
 		super();
-		Log.i(TAG, "ProviderListViewAdapter");
 		this.context = context;
 		this.typeList = typeList;
 	}
