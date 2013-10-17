@@ -1,39 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
     android:background="@drawable/listview_rounded_bg"
     android:descendantFocusability="blocksDescendants"
     android:orientation="vertical" >
 
-    
-    
-    <ImageView 
+    <ImageView
         android:id="@+id/isReadIv"
-        android:layout_height="10dp"
         android:layout_width="10dp"
+        android:layout_height="10dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/is_read_img"
-        android:contentDescription="@string/hello_world"/>
-    
+        android:contentDescription="@string/hello_world"
+        android:src="@drawable/is_read_img" />
+
     <ImageButton
         android:id="@+id/newsIcon"
-        android:layout_width="80dp"
-        android:layout_height="48dp"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
         android:background="@null"
         android:contentDescription="@string/hello_world"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_launcher" />
+        android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/newsText"
-        android:layout_toLeftOf="@+id/isReadIv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/isReadIv"
         android:layout_toRightOf="@+id/newsIcon"
         android:singleLine="true"
-        android:textSize="16sp"
+        android:textSize="20sp"
         android:typeface="sans" />
 
     <RelativeLayout
@@ -50,9 +47,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:ellipsize="marquee"
-            android:textColor="@color/light_grey"
             android:maxLines="1"
-            android:textSize="12sp"
+            android:textColor="@color/light_grey"
+            android:textSize="15sp"
             android:typeface="sans" />
     </RelativeLayout>
 

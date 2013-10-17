@@ -483,7 +483,7 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		
 		WebView myWebView = (WebView) dialog.findViewById(R.id.webview);
 		WebSettings webSettings = myWebView.getSettings();
-		webSettings.setDefaultFontSize(12);
+		webSettings.setDefaultFontSize(18);
 		myWebView.loadDataWithBaseURL("file:///assets/", html, "text/html",
 				"utf-8", null);
 		

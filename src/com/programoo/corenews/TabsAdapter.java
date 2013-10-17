@@ -88,7 +88,6 @@ public class TabsAdapter extends FragmentPagerAdapter implements
 		String tag = tabSpec.getTag();
 		
 		TabInfo info = new TabInfo(tag, clss, args);
-		Log.d(tag, "label name is: " + label);
 		View tabIndicator = null;
 		if (label.equalsIgnoreCase(mContext.getString(R.string.news_text)))
 		{
@@ -140,12 +139,10 @@ public class TabsAdapter extends FragmentPagerAdapter implements
 		int position = mTabHost.getCurrentTab();
 		mViewPager.setCurrentItem(position);
 		notifyDataSetChanged();
-		Log.d(tag, "ontabChanged: " + tabId);
 		// after tabhostchange reload child-view
 		MainActivity mCtx = (MainActivity) mContext;
 		if (mCtx.feedFragObj != null){
 			mCtx.feedFragObj.reloadView();
-			Log.i("kak","Reload view");
 		}
 		
 		//alert text if not setting yet
@@ -160,8 +157,6 @@ public class TabsAdapter extends FragmentPagerAdapter implements
 	public void onPageSelected(int position)
 	{
 		mTabHost.setCurrentTab(position);
-		Log.d(tag, "page change: " + position);
-		
 	}
 	
 	public void onPageScrollStateChanged(int state)
