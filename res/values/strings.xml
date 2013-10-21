@@ -10,13 +10,14 @@
     <string name="settings_text">ตั้งค่า</string>
 
     <!-- settings tab -->
-    <string name="add_source_text">เมื่อตั้งค่าเสร็จแล้วให้ปิดและเปิดแอปใหม่</string>
+    <string name="add_source_text">เลือกประเภทข่าวและสำนักพิมพ์ที่คุณชื่นชอบ</string>
     <string name="settings_title">ตั้งค่า</string>
     <string name="provider_selector_text">เลือกสำนักพิมพ์</string>
     <string name="typenews_selector_text">เลือกประเภทข่าว</string>
     <string name="it_text">เทคโนโลยี</string>
 
     <!-- thai translate -->
+    <string name="maximun_alert_text">ข่าวเช้านี้ ที่ประเทศไทย</string>
     <string name="splash_screen_text">ข่าวเช้านี้ ที่ประเทศไทย</string>
     <string name="breaking_news_text">ข่าวใหมล่าสุด</string>
     <string name="political_text">การเมือง</string>

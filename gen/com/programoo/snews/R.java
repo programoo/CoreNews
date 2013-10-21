@@ -127,64 +127,65 @@ public final class R {
         /**  settings tab 
          */
         public static final int add_source_text=0x7f040006;
-        public static final int addfeed_edt_hint_text=0x7f04001a;
+        public static final int addfeed_edt_hint_text=0x7f04001b;
         public static final int app_name=0x7f040001;
-        public static final int april=0x7f04002d;
-        public static final int august=0x7f040031;
-        public static final int breaking_news_text=0x7f04000c;
-        public static final int by_text=0x7f040023;
-        public static final int continue_read_text=0x7f040021;
-        public static final int country_text=0x7f040010;
-        public static final int credit_text=0x7f04001d;
-        public static final int dailynews_text=0x7f040024;
-        public static final int december=0x7f040035;
-        public static final int economic_text=0x7f040012;
-        public static final int entertainment_text=0x7f04000e;
-        public static final int february=0x7f04002b;
-        public static final int from_text=0x7f040022;
+        public static final int april=0x7f04002e;
+        public static final int august=0x7f040032;
+        public static final int breaking_news_text=0x7f04000d;
+        public static final int by_text=0x7f040024;
+        public static final int continue_read_text=0x7f040022;
+        public static final int country_text=0x7f040011;
+        public static final int credit_text=0x7f04001e;
+        public static final int dailynews_text=0x7f040025;
+        public static final int december=0x7f040036;
+        public static final int economic_text=0x7f040013;
+        public static final int entertainment_text=0x7f04000f;
+        public static final int february=0x7f04002c;
+        public static final int from_text=0x7f040023;
         /**  Replace placeholder ID with your tracking ID 
          */
         public static final int ga_trackingId=0x7f040000;
         public static final int hello_world=0x7f040003;
-        public static final int internet_disconnect_aleart_msg=0x7f04001f;
+        public static final int internet_disconnect_aleart_msg=0x7f040020;
         public static final int it_text=0x7f04000a;
-        public static final int january=0x7f04002a;
-        public static final int july=0x7f040030;
-        public static final int june=0x7f04002f;
-        public static final int lifestyle_text=0x7f040015;
-        public static final int march=0x7f04002c;
-        public static final int may=0x7f04002e;
-        public static final int n_string=0x7f040020;
+        public static final int january=0x7f04002b;
+        public static final int july=0x7f040031;
+        public static final int june=0x7f040030;
+        public static final int lifestyle_text=0x7f040016;
+        public static final int march=0x7f04002d;
+        /**  thai translate 
+         */
+        public static final int maximun_alert_text=0x7f04000b;
+        public static final int may=0x7f04002f;
+        public static final int n_string=0x7f040021;
         /**  news tab 
          */
         public static final int news_text=0x7f040004;
-        public static final int november=0x7f040034;
-        public static final int october=0x7f040033;
-        public static final int other_text=0x7f040017;
-        public static final int oversea_text=0x7f040011;
-        public static final int pass_day_text=0x7f040026;
-        public static final int pass_hour_text=0x7f040027;
-        public static final int pass_minute_text=0x7f040028;
-        public static final int pass_second_text=0x7f040029;
-        public static final int political_text=0x7f04000d;
-        public static final int post_text=0x7f04001b;
-        public static final int provider_news_text=0x7f040019;
+        public static final int november=0x7f040035;
+        public static final int october=0x7f040034;
+        public static final int other_text=0x7f040018;
+        public static final int oversea_text=0x7f040012;
+        public static final int pass_day_text=0x7f040027;
+        public static final int pass_hour_text=0x7f040028;
+        public static final int pass_minute_text=0x7f040029;
+        public static final int pass_second_text=0x7f04002a;
+        public static final int political_text=0x7f04000e;
+        public static final int post_text=0x7f04001c;
+        public static final int provider_news_text=0x7f04001a;
         public static final int provider_selector_text=0x7f040008;
-        public static final int science_text=0x7f040014;
-        public static final int september=0x7f040032;
+        public static final int science_text=0x7f040015;
+        public static final int september=0x7f040033;
         public static final int settings_text=0x7f040005;
         public static final int settings_title=0x7f040007;
-        public static final int share_text=0x7f04001e;
-        /**  thai translate 
-         */
-        public static final int splash_screen_text=0x7f04000b;
-        public static final int sport_text=0x7f04000f;
-        public static final int study_text=0x7f040016;
-        public static final int techonology_text=0x7f040013;
-        public static final int thairath_text=0x7f040025;
-        public static final int type_news_text=0x7f040018;
+        public static final int share_text=0x7f04001f;
+        public static final int splash_screen_text=0x7f04000c;
+        public static final int sport_text=0x7f040010;
+        public static final int study_text=0x7f040017;
+        public static final int techonology_text=0x7f040014;
+        public static final int thairath_text=0x7f040026;
+        public static final int type_news_text=0x7f040019;
         public static final int typenews_selector_text=0x7f040009;
-        public static final int your_comment_hint_text=0x7f04001c;
+        public static final int your_comment_hint_text=0x7f04001d;
     }
     public static final class style {
         public static final int MyTheme=0x7f080000;

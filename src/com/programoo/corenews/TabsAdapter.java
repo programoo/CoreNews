@@ -3,6 +3,7 @@ package com.programoo.corenews;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -142,11 +143,15 @@ public class TabsAdapter extends FragmentPagerAdapter implements
 		// after tabhostchange reload child-view
 		MainActivity mCtx = (MainActivity) mContext;
 		if (mCtx.feedFragObj != null){
-			mCtx.feedFragObj.reloadView();
+			if(tabId.equalsIgnoreCase("tab_news")){
+				mCtx.saveSettings();
+				
+				Intent intent = mCtx.getIntent();
+				mCtx.finish();
+				mCtx.startActivity(intent);
+			}
+				
 		}
-		
-		//alert text if not setting yet
-		
 	}
 	
 	public void onPageScrolled(int position, float positionOffset,

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import object.Feeder;
+import object.IsRead;
 import object.Kind;
 import object.News;
 import object.SArrayList;
@@ -18,10 +19,9 @@ import org.brickred.socialauth.android.SocialAuthError;
 import org.brickred.socialauth.android.SocialAuthListener;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -271,14 +271,22 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 							&& uFdObj.isSelected
 							&& uFdObj.name.indexOf(fdObj.name) != -1)
 					{
-						asyncJson(fdObj.url);
-						Log.i(TAG,"request: "+fdObj.url);
+						//LIMITE NEWS ONLY 200
+						if(mCtx.newsList.size() <= 100){
+							asyncJson(fdObj.url);
+							Log.i(TAG,"request: "+fdObj.url);
+						}
+						else{
+						}
 					}
 				}
 				
 			}
-			
 		}
+		
+		
+		
+		
 	}
 	
 	public int monthTranslate(String monthString)
@@ -329,6 +337,14 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 	{
 		// read only filter list
 		mCtx.filterNewsList = new SArrayList();
+		
+		if(mCtx.newsList == null){
+			Intent intent = mCtx.getIntent();
+			mCtx.finish();
+			startActivity(intent);
+			return;
+		}
+		
 		
 		for (int i = 0; i < mCtx.newsList.size(); ++i)
 		{
@@ -594,7 +610,10 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 				n.priority = dt.getMillis();
 				n.kind = ((Feeder) mCtx.fList.getObjByValue(url)).kind;
 				
-				mCtx.newsList.add(n);
+				
+				if(mCtx.newsList.size()<=100){
+					mCtx.newsList.add(n);
+				}
 				
 				index++;
 				if (index == 1)
@@ -605,8 +624,6 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 			
 			reloadView();
 			//reloadview
-			
-			
 			new AsyncHtmlFetch().execute(firstUrl + "," + secondUrl);
 			
 		} else
@@ -781,6 +798,22 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 	public int countUnread()
 	{
 		int unReadCount = 0;
+		
+		//mark old read before real count
+		
+		for(int i=0;i<mCtx.isReadList.size();i++){
+			
+			IsRead isReadObj = (IsRead) mCtx.isReadList.get(i);
+			for(int j=0;j<mCtx.filterNewsList.size();j++){
+				News newsObj = (News) mCtx.filterNewsList.get(j);
+				if(isReadObj.link.equalsIgnoreCase(newsObj.link)){
+					newsObj.isRead = true;
+					break;
+				}
+			}
+		}
+		
+		
 		for (int i = 0; i < mCtx.filterNewsList.size(); i++)
 		{
 			News newsObj = (News) mCtx.filterNewsList.get(i);

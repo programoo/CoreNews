@@ -1,6 +1,7 @@
 package com.programoo.corenews;
 
 import object.Feeder;
+import object.IsRead;
 import object.Kind;
 import object.News;
 import object.SArrayList;
@@ -27,6 +28,7 @@ public class MainActivity extends FragmentActivity
 	public SArrayList newsList;
 	public SArrayList filterNewsList;
 	public SArrayList typeList;
+	public SArrayList isReadList;
 	public SArrayList uFeederList;
 	public FeedFragment feedFragObj;
 	private ImageView splashScreen;
@@ -101,26 +103,22 @@ public class MainActivity extends FragmentActivity
 		
 		addFeeder();
 		
+		//tracker
+		EasyTracker.getInstance(this).activityStart(this);  // Add this method.
 	}
 	
 	@Override
 	protected void onStart()
 	{
 		super.onStart();
-		EasyTracker.getInstance(this).activityStart(this);  // Add this method.
 	}
 	
 	@Override
 	protected void onDestroy()
 	{
 		Log.i(TAG, "onDestroy");
-		
-		Info.serializeFromArrayList(this, "News.csv", filterNewsList,
-				News.class);
-		Info.serializeFromArrayList(this, "UFeeder.csv", uFeederList,
-				UFeeder.class);
-		Info.serializeFromArrayList(this, "Type.csv", typeList, Kind.class);
-		
+		saveSettings();
+		EasyTracker.getInstance(this).activityStop(this);
 		super.onDestroy();
 	}
 	
@@ -134,7 +132,6 @@ public class MainActivity extends FragmentActivity
 	protected void onStop()
 	{
 		super.onStop();
-		EasyTracker.getInstance(this).activityStop(this);
 	}
 	
 	public void addFeeder()
@@ -145,10 +142,17 @@ public class MainActivity extends FragmentActivity
 		newsList = new SArrayList();
 		typeList = new SArrayList();
 		uFeederList = new SArrayList();
+		isReadList = new SArrayList();
 		
+		Info.deserializeToGenericArrayList(this, "IsRead.csv", isReadList,
+				IsRead.class);
+		
+		//compose isReadList
+		/*
 		Info.deserializeToGenericArrayList(this, "News.csv", newsList,
 				News.class);
 		newsList.sortByPriority();
+		*/
 		
 		Info.deserializeToGenericArrayList(this, "UFeeder.csv", uFeederList,
 				UFeeder.class);
@@ -238,13 +242,22 @@ public class MainActivity extends FragmentActivity
 				"http://www.manager.co.th/RSS/Travel/Travel.xml", true));
 		// THAIRATH RSS
 		fList.add(new Feeder(getString(R.string.breaking_news_text),
-				"http://www.thairath.co.th/rss/news.xml ", true));
+				"http://www.thairath.co.th/rss/news.xml", true));
+		
+		fList.add(new Feeder(getString(R.string.political_text),
+				"http://www.thairath.co.th/rss/pol.xml", true));
+		
+		fList.add(new Feeder(getString(R.string.country_text),
+				"http://www.thairath.co.th/rss/region.xml", true));
+
+		fList.add(new Feeder(getString(R.string.entertainment_text),
+				"http://www.thairath.co.th/rss/ent.xml", true));
 		
 		fList.add(new Feeder(getString(R.string.sport_text),
-				"http://www.thairath.co.th/rss/sport.xml ", true));
+				"http://www.thairath.co.th/rss/sport.xml", true));
 		
 		fList.add(new Feeder(getString(R.string.lifestyle_text),
-				"http://www.thairath.co.th/rss/life.xml ", true));
+				"http://www.thairath.co.th/rss/life.xml", true));
 		
 		fList.add(new Feeder(getString(R.string.lifestyle_text),
 				"http://www.thairath.co.th/rss/life.xml ", true));
@@ -260,9 +273,6 @@ public class MainActivity extends FragmentActivity
 		
 		fList.add(new Feeder(getString(R.string.oversea_text),
 				"http://www.thairath.co.th/rss/oversea.xml", true));
-		
-		fList.add(new Feeder(getString(R.string.country_text),
-				"http://www.thairath.co.th/rss/region.xml", true));
 		
 		// MATICHON RSS
 		fList.add(new Feeder(getString(R.string.breaking_news_text),
@@ -575,4 +585,24 @@ public class MainActivity extends FragmentActivity
 		
 	}
 	
+	public void saveSettings(){
+		
+		if(filterNewsList !=null && uFeederList !=null && typeList != null){
+			
+			for(int i=0;i<filterNewsList.size();i++){
+				News newObj =  (News) filterNewsList.get(i) ;
+				if(newObj.isRead){
+					isReadList.add(new IsRead(newObj.link));				
+				}
+			}
+			
+			Info.serializeFromArrayList(this, "IsRead.csv", isReadList,
+					IsRead.class);
+			
+			Info.serializeFromArrayList(this, "UFeeder.csv", uFeederList,
+					UFeeder.class);
+			Info.serializeFromArrayList(this, "Type.csv", typeList, Kind.class);
+			
+		}
+	}
 }
