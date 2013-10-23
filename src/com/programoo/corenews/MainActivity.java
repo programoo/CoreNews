@@ -243,36 +243,61 @@ public class MainActivity extends FragmentActivity
 		// THAIRATH RSS
 		fList.add(new Feeder(getString(R.string.breaking_news_text),
 				"http://www.thairath.co.th/rss/news.xml", true));
-		
 		fList.add(new Feeder(getString(R.string.political_text),
 				"http://www.thairath.co.th/rss/pol.xml", true));
-		
 		fList.add(new Feeder(getString(R.string.country_text),
 				"http://www.thairath.co.th/rss/region.xml", true));
-
 		fList.add(new Feeder(getString(R.string.entertainment_text),
 				"http://www.thairath.co.th/rss/ent.xml", true));
-		
 		fList.add(new Feeder(getString(R.string.sport_text),
 				"http://www.thairath.co.th/rss/sport.xml", true));
-		
 		fList.add(new Feeder(getString(R.string.lifestyle_text),
 				"http://www.thairath.co.th/rss/life.xml", true));
-		
 		fList.add(new Feeder(getString(R.string.lifestyle_text),
 				"http://www.thairath.co.th/rss/life.xml ", true));
-		
 		fList.add(new Feeder(getString(R.string.techonology_text),
 				"http://www.thairath.co.th/rss/tech.xml", true));
-		
 		fList.add(new Feeder(getString(R.string.economic_text),
 				"http://www.thairath.co.th/rss/eco.xml", true));
-		
 		fList.add(new Feeder(getString(R.string.study_text),
 				"http://www.thairath.co.th/rss/edu.xml", true));
-		
 		fList.add(new Feeder(getString(R.string.oversea_text),
 				"http://www.thairath.co.th/rss/oversea.xml", true));
+		// DAILYNEWS RSS
+				fList.add(new Feeder(getString(R.string.breaking_news_text),
+						"http://www.dailynews.co.th/rss/rss.xml", true));
+				fList.add(new Feeder(getString(R.string.breaking_news_text),
+						"http://www.dailynews.co.th/rss/popular.xml", true));
+				
+				
+				
+				fList.add(new Feeder(getString(R.string.political_text),
+						"http://www.dailynews.co.th/rss/news_politics.xml", true));
+				
+				fList.add(new Feeder(getString(R.string.country_text),
+						"http://www.dailynews.co.th/rss/news_crime.xml", true));
+				
+				fList.add(new Feeder(getString(R.string.country_text),
+						"http://www.dailynews.co.th/rss/news_thailand.xml", true));
+				fList.add(new Feeder(getString(R.string.oversea_text),
+						"http://www.dailynews.co.th/rss/news_world.xml", true));
+				fList.add(new Feeder(getString(R.string.sport_text),
+						"http://www.dailynews.co.th/rss/news_sport.xml", true));
+				fList.add(new Feeder(getString(R.string.techonology_text),
+						"http://www.dailynews.co.th/rss/news_technology.xml", true));
+				fList.add(new Feeder(getString(R.string.entertainment_text),
+						"http://www.dailynews.co.th/rss/news_entertainment.xml", true));
+				fList.add(new Feeder(getString(R.string.economic_text),
+						"http://www.dailynews.co.th/rss/news_business.xml", true));
+				fList.add(new Feeder(getString(R.string.lifestyle_text),
+						"http://www.dailynews.co.th/rss/news_society.xml", true));
+				fList.add(new Feeder(getString(R.string.economic_text),
+						"http://www.dailynews.co.th/rss/news_business.xml", true));
+				
+				fList.add(new Feeder(getString(R.string.study_text),
+						"http://www.dailynews.co.th/rss/news_education.xml", true));
+				fList.add(new Feeder(getString(R.string.other_text),
+						"http://www.dailynews.co.th/rss/news_agriculture.xml", true));
 		
 		// MATICHON RSS
 		fList.add(new Feeder(getString(R.string.breaking_news_text),
@@ -313,27 +338,22 @@ public class MainActivity extends FragmentActivity
 				"http://www.komchadluek.net/rss/sport.xml", true));
 		fList.add(new Feeder(getString(R.string.lifestyle_text),
 				"http://www.komchadluek.net/rss/lifestyle.xml", true));
-		
 		fList.add(new Feeder(getString(R.string.lifestyle_text),
 				"http://www.komchadluek.net/rss/drink-eat-travel.xml", true));
 		fList.add(new Feeder(getString(R.string.economic_text),
 				"http://www.komchadluek.net/rss/agriculture.xml", true));
-		
 		fList.add(new Feeder(getString(R.string.oversea_text),
 				"http://www.komchadluek.net/rss/foreign.xml", true));
-		
 		fList.add(new Feeder(getString(R.string.other_text),
 				"http://www.komchadluek.net/rss/amulet.xml", true));
 		fList.add(new Feeder(getString(R.string.other_text),
 				"http://www.komchadluek.net/rss/horoscope.xml", true));
 		fList.add(new Feeder(getString(R.string.country_text),
 				"http://www.komchadluek.net/rss/local.xml", true));
-		
 		fList.add(new Feeder(getString(R.string.other_text),
 				"http://www.komchadluek.net/rss/unclecham.xml", true));
 		fList.add(new Feeder(getString(R.string.economic_text),
 				"http://www.komchadluek.net/rss/economic.xml", true));
-		
 		fList.add(new Feeder(getString(R.string.lifestyle_text),
 				"http://www.komchadluek.net/rss/homecar.xml", true));
 		
@@ -348,15 +368,12 @@ public class MainActivity extends FragmentActivity
 		// BLOGNONE
 		fList.add(new Feeder(getString(R.string.techonology_text),
 				"http://www.blognone.com/atom.xml", true));
-		
 		// THUM UP
 		fList.add(new Feeder(getString(R.string.techonology_text),
 				"http://www.thumbsup.in.th/feed/", true));
-		
 		// CH3
 		fList.add(new Feeder(getString(R.string.breaking_news_text),
 				"http://www.krobkruakao.com/rss/News.rss", true));
-		
 		fList.add(new Feeder(getString(R.string.country_text),
 				"http://www.krobkruakao.com/rss/SocialNews.rss", true));
 		fList.add(new Feeder(getString(R.string.economic_text),
@@ -562,6 +579,9 @@ public class MainActivity extends FragmentActivity
 		fList.add(new Feeder(getString(R.string.other_text),
 				"http://rssfeeds.sanook.com/rss/feeds/sanook/sex.index.xml",
 				true));
+		
+		
+		
 		
 		// regenerate typeList from feeder
 		for (int i = 0; i < this.fList.size(); i++)

@@ -175,13 +175,14 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 					+ currentShowOnDialogNew.title
 					+ "\n"
 					+ Info.html2text(currentShowOnDialogNew.description)
-					+ "\n"
+					+ "\n\n"
 					+ getString(R.string.continue_read_text)
 					+ ": "
 					+ currentShowOnDialogNew.link
 					+ "\n"
 					+ getString(R.string.credit_text)
-					+ ": https://play.google.com/store/search?q=prakarn%20wongsanit&c=apps&hl=th";
+					+ ": https://play.google.com/store/apps/developer?id=programoo&hl=th";
+			
 			try
 			{
 				Bitmap preset = aq
@@ -578,40 +579,33 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 				n.imgUrl = descriptionParser(entry.toString());
 				
 				DateTime dt;
+				int year=0,month=0,day=0,hour=0,min=0,sec=0;
 				try
 				{
 					
-					int year = Integer.parseInt(pubDate.split(" ")[3]);
-					int month = monthTranslate(pubDate.split(" ")[2]);
-					int day = Integer.parseInt(pubDate.split(" ")[1]);
-					int hour = Integer.parseInt(pubDate.split(" ")[4]
+					year = Integer.parseInt(pubDate.split(" ")[3]);
+					month = monthTranslate(pubDate.split(" ")[2]);
+					day = Integer.parseInt(pubDate.split(" ")[1]);
+					hour = Integer.parseInt(pubDate.split(" ")[4]
 							.split(":")[0]);
-					int min = Integer
+					min = Integer
 							.parseInt(pubDate.split(" ")[4].split(":")[1]);
-					int sec = Integer
+					sec = Integer
 							.parseInt(pubDate.split(" ")[4].split(":")[2]);
 					dt = new DateTime(year, month, day, hour, min, sec, 0);
 					
 				} catch (Exception e)
 				{
 					dt = new DateTime();
-					String dateString = pubDate;
-					// String pattern = "yyyy-MM-dd HH:mm:ssZ";
-					// String pattern = "yyyy-MM-dd HH.mm.ss aa";
-					
-					// DateTimeFormatter dtf =
-					// DateTimeFormat.forPattern(pattern);
-					// DateTime dateTime = dtf.parseDateTime(dateString);
-					
-					// dt = dateTime;
-					
 				}
 				n.pubDate = getHumanLanguageTime(dt);
 				n.priority = dt.getMillis();
 				n.kind = ((Feeder) mCtx.fList.getObjByValue(url)).kind;
 				
+				DateTime currentTime = new DateTime();
+				Duration dur = new Duration(dt, currentTime);
 				
-				if(mCtx.newsList.size()<=100){
+				if(mCtx.newsList.size()<=100 && dur.getStandardDays() <= 31){
 					mCtx.newsList.add(n);
 				}
 				
@@ -744,35 +738,45 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 		
 		public void setImgUrl(String url, News newsObj)
 		{
+			//find base url
+			String baseUrl = url.replace("http://", "").split("/")[0];
+
 			ArrayList<String> aList = new ArrayList<String>();
 			
 			String feederName = url.split("[.]")[1];
 			int imgIdxAt = imgIdxHM.get(feederName);
 			
-			// i(TAG, "IMGIDX IS :" + imgIdxAt);
 			AjaxCallback<String> cbA = new AjaxCallback<String>();
 			cbA.url(url).type(String.class);
 			aq.sync(cbA);
-			String resultA = cbA.getResult();// .toLowerCase(Locale.getDefault());
+			String resultA = cbA.getResult();
 			// AjaxStatus status1A = cbA.getStatus();
 			// tricky for split without remove s
-			resultA = resultA.replaceAll(".jpg\"", ".jpg.kak");
+			if(resultA.indexOf(".jpg") != -1)
+				resultA = resultA.replaceAll(".jpg\"", ".jpg.kak");
+			
+			if(resultA.indexOf(".png") != -1)
 			resultA = resultA.replaceAll(".png\"", ".png.kak");
+			
+			if(resultA.indexOf("jpeg") != -1)
 			resultA = resultA.replaceAll(".jpeg\"", ".jpeg.kak");
+			
+			if(resultA.indexOf("JPEG") != -1)
 			resultA = resultA.replaceAll(".JPEG\"", ".JPEG.kak");
 			
 			String[] aSplit = resultA.split(".kak", -1);
+			String firstImg="";
 			for (int i = 0; i < aSplit.length; i++)
 			{
 				String imgUrl = aSplit[i];
 				int lastIdx = imgUrl.lastIndexOf("\"") + 1;
 				
 				String imgUrlA = imgUrl.substring(lastIdx);
+				if(i==0)firstImg = imgUrlA;
 				
 				// must have http:
 				if (imgUrlA.indexOf("http:") != -1)
 				{
-					// i(TAG, "ImageXXx: " + imgUrlA);
 					aList.add(imgUrlA);
 				}
 			}
@@ -781,10 +785,16 @@ public class FeedFragment extends Fragment implements OnItemClickListener,
 				newsObj.imgUrl = aList.get(imgIdxAt);
 			} else
 			{
-				newsObj.imgUrl = aList.get(0);
+				
+				//firstImg
+				if(firstImg.indexOf("http:")!= -1){
+					newsObj.imgUrl = firstImg;
+				}
+				else{
+					firstImg = "http://"+baseUrl+firstImg;
+					newsObj.imgUrl = firstImg;
+				}
 			}
-			// (TAG, "Settings image: " + aList.size() + "," + newsObj.imgUrl);
-			// i(TAG, "Settings image: " + aList.size() + "," + newsObj.imgUrl);
 		}
 		
 		@Override
